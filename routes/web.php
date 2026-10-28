@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\Admin\CategoriaController;
+use App\Http\Controllers\Admin\ProductoController;
 use App\Http\Controllers\DesarrolloController;
-use App\Models\Mesa;
+use App\Http\Controllers\MenuController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,6 +18,12 @@ Route::get('/', DesarrolloController::class)->name('inicio');
 // Administración (rol: admin)
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::view('/', 'admin.index')->name('index');
+
+    // Menú
+    Route::resource('categorias', CategoriaController::class)->except('show');
+    Route::resource('productos', ProductoController::class)->except('show');
+    Route::patch('productos/{producto}/disponible', [ProductoController::class, 'alternarDisponible'])
+        ->name('productos.disponible');
 });
 
 // Mesero (roles: mesero, admin)
@@ -35,12 +43,6 @@ Route::prefix('caja')->name('caja.')->group(function () {
 
 // Menú público (sin login)
 Route::prefix('menu')->name('menu.')->group(function () {
-    Route::view('/', 'menu.index')->name('index');
-
-    // Provisional: el módulo de Menú lo reemplaza por su controlador
-    Route::get('/mesa/{token_qr}', function (string $tokenQr) {
-        $mesa = Mesa::where('token_qr', $tokenQr)->firstOrFail();
-
-        return view('menu.index', ['mesa' => $mesa]);
-    })->name('mesa');
+    Route::get('/', [MenuController::class, 'index'])->name('index');
+    Route::get('/mesa/{token_qr}', [MenuController::class, 'mesa'])->name('mesa');
 });

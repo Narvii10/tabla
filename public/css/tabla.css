@@ -1,0 +1,543 @@
+/*
+ * Estilos del sistema interno (admin, mesero, cocina, caja). Se cargan después de Bootstrap.
+ * Misma marca que el menú público (public/css/menu.css): madera, papel crema y vino,
+ * Besley para títulos de página y Libre Franklin para todo lo demás.
+ * Aquí se trabaja todo el día: superficies planas, poco color y el vino solo en acciones y estados.
+ */
+
+:root {
+    --tabla-vino: #7b2d3b;
+    --tabla-vino-oscuro: #5a1f2a;
+    --tabla-vino-claro: #f3e3e0;
+    --tabla-madera: #2f221b;
+    --tabla-madera-clara: #46352b;
+    --tabla-crema: #f7f2e8;
+    --tabla-papel: #fffdf8;
+    --tabla-arena: #efe7d9;
+    --tabla-mostaza: #c8963e;
+    --tabla-oliva: #4f6b2c;
+    --tabla-texto: #2b2018;
+    --tabla-gris: #6b5c50;
+    --tabla-borde: #e6dccb;
+    --tabla-borde-fuerte: #d6c8b2;
+    --tabla-fuente-titulos: 'Besley', Georgia, serif;
+    --tabla-fuente: 'Libre Franklin', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    --tabla-ease: cubic-bezier(0.23, 1, 0.32, 1);
+
+    /* Bootstrap */
+    --bs-primary: var(--tabla-vino);
+    --bs-primary-rgb: 123, 45, 59;
+    --bs-link-color: var(--tabla-vino);
+    --bs-link-color-rgb: 123, 45, 59;
+    --bs-link-hover-color: var(--tabla-vino-oscuro);
+    --bs-link-hover-color-rgb: 90, 31, 42;
+    --bs-body-color: var(--tabla-texto);
+    --bs-body-bg: var(--tabla-crema);
+    --bs-body-font-family: var(--tabla-fuente);
+    --bs-border-color: var(--tabla-borde);
+    --bs-border-radius: .5rem;
+    --bs-border-radius-lg: .75rem;
+    --bs-secondary-color: var(--tabla-gris);
+    --bs-emphasis-color: var(--tabla-texto);
+}
+
+html { -webkit-tap-highlight-color: transparent; }
+
+body {
+    background: var(--tabla-crema);
+    font-family: var(--tabla-fuente);
+    -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: #e8c98f; color: var(--tabla-madera); }
+
+/* Títulos de página en la letra del cartel; el resto de encabezados en la letra de texto */
+h1, .titulo-serif {
+    font-family: var(--tabla-fuente-titulos);
+    font-weight: 800;
+    letter-spacing: -.02em;
+}
+
+h2, h3, h4, h5, h6, .h5, .h6 { font-family: var(--tabla-fuente); font-weight: 600; letter-spacing: -.005em; }
+
+.text-muted { color: var(--tabla-gris) !important; }
+
+:focus-visible { outline: 3px solid rgba(200, 150, 62, .7); outline-offset: 2px; }
+
+/* ---------- Botones y formularios ---------- */
+
+.btn {
+    font-weight: 500;
+    touch-action: manipulation;
+    transition: transform 140ms var(--tabla-ease), background-color 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+/* El botón "se hunde" al presionarlo */
+.btn:active { transform: scale(.97); }
+
+.btn-primary {
+    --bs-btn-bg: var(--tabla-vino);
+    --bs-btn-border-color: var(--tabla-vino);
+    --bs-btn-hover-bg: var(--tabla-vino-oscuro);
+    --bs-btn-hover-border-color: var(--tabla-vino-oscuro);
+    --bs-btn-active-bg: var(--tabla-vino-oscuro);
+    --bs-btn-active-border-color: var(--tabla-vino-oscuro);
+    --bs-btn-disabled-bg: var(--tabla-vino);
+    --bs-btn-disabled-border-color: var(--tabla-vino);
+    --bs-btn-focus-shadow-rgb: 123, 45, 59;
+}
+
+.btn-outline-primary {
+    --bs-btn-color: var(--tabla-vino);
+    --bs-btn-border-color: var(--tabla-borde-fuerte);
+    --bs-btn-hover-color: var(--tabla-vino-oscuro);
+    --bs-btn-hover-bg: var(--tabla-vino-claro);
+    --bs-btn-hover-border-color: #d9b3ad;
+    --bs-btn-active-color: var(--tabla-vino-oscuro);
+    --bs-btn-active-bg: #ecd3ce;
+    --bs-btn-active-border-color: #d9b3ad;
+}
+
+.btn-light {
+    --bs-btn-bg: var(--tabla-papel);
+    --bs-btn-border-color: var(--tabla-borde);
+    --bs-btn-hover-bg: var(--tabla-arena);
+    --bs-btn-hover-border-color: var(--tabla-borde-fuerte);
+    --bs-btn-active-bg: #e7dccb;
+    --bs-btn-color: var(--tabla-texto);
+}
+
+.form-control,
+.form-select {
+    border-color: var(--tabla-borde-fuerte);
+    background-color: var(--tabla-papel);
+}
+
+.form-control::placeholder { color: #9a8b7e; }
+
+.form-control:focus,
+.form-select:focus,
+.form-check-input:focus {
+    border-color: #b9858d;
+    box-shadow: 0 0 0 .2rem rgba(123, 45, 59, .14);
+}
+
+.form-check-input:checked {
+    background-color: var(--tabla-vino);
+    border-color: var(--tabla-vino);
+}
+
+.input-group-text { background: var(--tabla-arena); border-color: var(--tabla-borde-fuerte); color: var(--tabla-gris); }
+
+.form-label { font-weight: 500; font-size: .9rem; }
+.form-text { color: var(--tabla-gris); }
+
+/* En celular los campos van a 16px para que el iPhone no haga zoom al escribir */
+@media (pointer: coarse) {
+    .form-control, .form-select { font-size: 16px; }
+}
+
+.pagination {
+    --bs-pagination-active-bg: var(--tabla-vino);
+    --bs-pagination-active-border-color: var(--tabla-vino);
+    --bs-pagination-color: var(--tabla-vino);
+    --bs-pagination-bg: var(--tabla-papel);
+    --bs-pagination-border-color: var(--tabla-borde);
+    --bs-pagination-hover-color: var(--tabla-vino-oscuro);
+    --bs-pagination-hover-bg: var(--tabla-arena);
+    --bs-pagination-focus-box-shadow: 0 0 0 .2rem rgba(123, 45, 59, .15);
+}
+
+/* ---------- Barra de navegación (áreas internas) ---------- */
+
+.navbar-tabla {
+    background: var(--tabla-madera);
+    padding-block: .55rem;
+}
+
+.navbar-tabla .navbar-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: .55rem;
+    font-family: var(--tabla-fuente-titulos);
+    font-weight: 800;
+    font-size: 1.45rem;
+    letter-spacing: -.02em;
+    color: #f4ead6;
+}
+
+/* Logo de la charcutería (en crema) y debajo del nombre del sistema, el del negocio */
+.navbar-tabla .marca-logo { width: 44px; height: 44px; flex-shrink: 0; }
+
+.navbar-tabla .navbar-brand > span { display: grid; line-height: 1; }
+
+.navbar-tabla .marca-negocio {
+    margin-top: .2rem;
+    font-family: var(--tabla-fuente);
+    font-weight: 500;
+    font-size: .75rem;
+    letter-spacing: 0;
+    color: rgba(244, 234, 214, .65);
+}
+
+.navbar-tabla .nav-link {
+    position: relative;
+    color: rgba(244, 234, 214, .7);
+    padding-inline: .8rem !important;
+    transition: color 150ms ease;
+}
+
+.navbar-tabla .nav-link:hover,
+.navbar-tabla .nav-link:focus { color: #f4ead6; }
+
+/* Área actual: texto mostaza y una raya debajo, sin fondo de color */
+.navbar-tabla .nav-link.active { color: var(--tabla-mostaza); }
+
+@media (min-width: 992px) {
+    .navbar-tabla .nav-link.active::after {
+        content: '';
+        position: absolute;
+        left: .8rem;
+        right: .8rem;
+        bottom: -.55rem;
+        height: 3px;
+        border-radius: 3px 3px 0 0;
+        background: var(--tabla-mostaza);
+    }
+}
+
+.subnav-tabla {
+    background: var(--tabla-papel);
+    border-bottom: 1px solid var(--tabla-borde);
+}
+
+.subnav-tabla .nav { scrollbar-width: none; }
+
+.subnav-tabla .nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    color: var(--tabla-gris);
+    border-bottom: 2px solid transparent;
+    border-radius: 0;
+    padding: .8rem 1rem;
+    transition: color 150ms ease, border-color 150ms ease;
+}
+
+.subnav-tabla .nav-link:hover { color: var(--tabla-texto); }
+
+.subnav-tabla .nav-link.active {
+    color: var(--tabla-vino);
+    border-bottom-color: var(--tabla-vino);
+    background: transparent;
+    font-weight: 600;
+}
+
+/* ---------- Encabezado de página ---------- */
+
+.encabezado-pagina h1 { font-size: 2rem; line-height: 1.05; margin-bottom: .3rem; }
+
+/* Celular: margen de 16px a los lados y título más compacto */
+@media (max-width: 575.98px) {
+    .container { padding-inline: 16px; }
+    .encabezado-pagina h1 { font-size: 1.5rem; }
+}
+.encabezado-pagina .subtitulo { color: var(--tabla-gris); margin-bottom: 0; }
+.encabezado-pagina a.small { color: var(--tabla-gris); }
+.encabezado-pagina a.small:hover { color: var(--tabla-vino); }
+
+/* ---------- Tarjetas, tablas y resumen ---------- */
+
+/* Superficies planas: papel sobre crema, separadas por un borde suave y sin sombra */
+.card {
+    --bs-card-bg: var(--tabla-papel);
+    --bs-card-border-color: var(--tabla-borde);
+    --bs-card-cap-bg: var(--tabla-papel);
+    --bs-card-border-radius: .75rem;
+}
+
+.card-header { border-bottom-color: var(--tabla-borde); }
+
+.card-acceso {
+    transition: border-color 150ms ease, transform 160ms var(--tabla-ease);
+}
+
+.card-acceso:active { transform: scale(.985); }
+
+@media (hover: hover) and (pointer: fine) {
+    .card-acceso:hover { border-color: var(--tabla-borde-fuerte); }
+    .card-acceso:hover h2 { color: var(--tabla-vino) !important; }
+}
+
+/* Íconos de las tarjetas de acceso: el ícono solo, en vino, sin cuadro de color detrás */
+.icono-circulo {
+    display: inline-block;
+    color: var(--tabla-vino);
+    font-size: 1.5rem;
+    line-height: 1;
+}
+
+.table-tabla {
+    --bs-table-bg: transparent;
+    --bs-table-hover-bg: #faf5ec;
+    --bs-table-border-color: #efe7da;
+    margin-bottom: 0;
+}
+
+/* Encabezados de tabla: texto chico gris, sin mayúsculas ni franja de color */
+.table-tabla thead th {
+    font-size: .8rem;
+    color: var(--tabla-gris);
+    font-weight: 500;
+    background: transparent;
+    border-bottom: 1px solid var(--tabla-borde);
+    padding-block: .7rem;
+    white-space: nowrap;
+}
+
+.table-tabla td { padding-block: .8rem; }
+
+.table-tabla tbody tr:last-child td { border-bottom: 0; }
+
+.table-tabla .text-end { font-variant-numeric: tabular-nums; }
+
+.min-w-0 { min-width: 0; }
+
+/*
+ * Tabla que en celular se vuelve tarjetas: <table class="table table-tabla tabla-tarjetas">
+ * dentro de <div class="card card-listado">. Cada fila usa las celdas
+ * .celda-principal (foto y nombre), .celda-precio, .celda-estado y .celda-acciones;
+ * las demás columnas ya se esconden en celular con d-none d-md-table-cell.
+ */
+@media (max-width: 767.98px) {
+    .card-listado { background: transparent; border: 0; }
+    .card-listado > .card-body { padding: 0 0 1rem; border: 0 !important; }
+    .card-listado .table-responsive { overflow: visible; }
+
+    .tabla-tarjetas thead { display: none; }
+    .tabla-tarjetas tbody { display: grid; gap: .75rem; }
+
+    .tabla-tarjetas tbody tr {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+            "principal precio"
+            "estado    acciones";
+        align-items: center;
+        gap: .85rem 1rem;
+        padding: 1rem;
+        background: var(--tabla-papel);
+        border: 1px solid var(--tabla-borde);
+        border-radius: .75rem;
+    }
+
+    .tabla-tarjetas tbody td { padding: 0 !important; border: 0; background: transparent; }
+    .tabla-tarjetas .celda-principal { grid-area: principal; align-self: start; }
+    .tabla-tarjetas .celda-precio { grid-area: precio; align-self: start; padding-top: .15rem !important; font-size: 1.05rem; }
+    .tabla-tarjetas .celda-estado { grid-area: estado; }
+    .tabla-tarjetas .celda-acciones { grid-area: acciones; }
+
+    /* Botones más grandes para el dedo */
+    .tabla-tarjetas .celda-acciones .btn { min-width: 40px; min-height: 40px; }
+    .tabla-tarjetas .btn-estado { min-height: 36px; }
+
+    .tabla-tarjetas .fila-agotada { background: #f6efe4; }
+}
+
+.fila-agotada .nombre-producto { color: var(--tabla-gris); text-decoration: line-through; text-decoration-color: rgba(123, 45, 59, .5); }
+.fila-agotada .miniatura { filter: grayscale(1); opacity: .6; }
+
+.miniatura {
+    width: 48px;
+    height: 48px;
+    border-radius: .5rem;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+/* Producto sin foto: un plato vacío dibujado con el ícono, en tono neutro */
+.miniatura-vacia {
+    display: grid;
+    place-items: center;
+    background: var(--tabla-arena);
+    color: #a8988a;
+    font-size: 1.15rem;
+}
+
+/* Resumen arriba de un listado: número grande y etiqueta, todo dentro de una sola tarjeta */
+.resumen {
+    display: flex;
+    flex-wrap: wrap;
+    background: var(--tabla-papel);
+    border: 1px solid var(--tabla-borde);
+    border-radius: .75rem;
+}
+
+.dato-resumen {
+    flex: 1 1 0;
+    min-width: 7rem;
+    padding: .9rem 1.1rem;
+    color: var(--tabla-texto);
+    text-decoration: none;
+    transition: background-color 150ms ease;
+}
+
+.dato-resumen + .dato-resumen { border-left: 1px solid var(--tabla-borde); }
+
+a.dato-resumen:hover { background: #faf5ec; color: var(--tabla-texto); }
+a.dato-resumen.activo { box-shadow: inset 0 -3px 0 var(--tabla-vino); }
+
+.dato-resumen .valor {
+    font-size: 1.65rem;
+    font-weight: 600;
+    line-height: 1.1;
+    font-variant-numeric: tabular-nums;
+}
+
+.dato-resumen .etiqueta { color: var(--tabla-gris); font-size: .85rem; }
+
+.badge-suave {
+    font-weight: 500;
+    border: 1px solid transparent;
+}
+
+.badge-suave.vino { background: var(--tabla-vino-claro); color: var(--tabla-vino-oscuro); }
+.badge-suave.exito { background: #e5efdc; color: #2f5418; }
+.badge-suave.neutro { background: #eee7dc; color: #5d4f44; }
+.badge-suave.peligro { background: #f8e1df; color: #8f2424; }
+
+/* Botón agotado / disponible: un clic cambia el estado */
+.btn-estado {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    border-radius: 2rem;
+    font-size: .8rem;
+    padding: .25rem .75rem;
+    white-space: nowrap;
+}
+
+.btn-estado.disponible { background: #e5efdc; color: #2f5418; border: 1px solid #cfe0c0; }
+.btn-estado.agotado { background: #f8e1df; color: #8f2424; border: 1px solid #efc4c0; }
+
+@media (hover: hover) and (pointer: fine) {
+    .btn-estado.disponible:hover { background: #f8e1df; color: #8f2424; border-color: #efc4c0; }
+    .btn-estado.agotado:hover { background: #e5efdc; color: #2f5418; border-color: #cfe0c0; }
+}
+
+/* Salamín (components/mascota.blade.php): cara feliz o triste según data-humor */
+.mascota { overflow: visible; }
+.mascota .mascota-boca-triste { display: none; }
+.mascota[data-humor="triste"] .mascota-boca-feliz { display: none; }
+.mascota[data-humor="triste"] .mascota-boca-triste { display: inline; }
+
+/* Estado vacío: Salamín triste y una frase que dice qué hacer */
+.estado-vacio { padding: 3rem 1rem; text-align: center; color: var(--tabla-gris); }
+.estado-vacio .mascota { display: block; width: 76px; height: auto; margin: 0 auto .9rem; }
+.estado-vacio .icono-circulo { font-size: 2rem; margin-bottom: .75rem; color: #a8988a; }
+
+/* Mensajes flash: fondo suave del color del estado, sin franja lateral */
+.alert { border: 1px solid transparent; }
+.alert-success { background: #e9f2e1; border-color: #cfe0c0; color: #2f5418; }
+.alert-danger { background: #f9e5e3; border-color: #efc4c0; color: #8f2424; }
+
+@media (prefers-reduced-motion: no-preference) {
+    .alert.fade.show { animation: entrar-alerta 260ms var(--tabla-ease); }
+}
+
+@keyframes entrar-alerta {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: none; }
+}
+
+/* ---------- Vista previa del plato en el formulario de productos ---------- */
+
+.vista-previa {
+    position: relative;
+    background: #f4ead6;
+    padding: 1.4rem 1.25rem 1.5rem;
+    border-radius: 2px;
+}
+
+/* Orilla ondulada arriba, como la hoja del menú público */
+.vista-previa::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -9px;
+    height: 10px;
+    background: radial-gradient(circle at 10px 10px, #f4ead6 9.5px, transparent 10px) 0 0 / 20px 10px repeat-x;
+}
+
+.vista-previa-plato {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 12px;
+    transition: opacity 150ms ease;
+}
+
+.vista-previa-nombre {
+    font-family: var(--tabla-fuente-titulos);
+    font-weight: 700;
+    font-size: 1.2rem;
+    line-height: 1.2;
+    overflow-wrap: anywhere;
+}
+
+.vista-previa-nombre.vacio { color: #a8988a; }
+
+.vista-previa-precio { color: var(--tabla-vino); font-weight: 600; font-variant-numeric: tabular-nums; padding-top: .1rem; }
+
+.vista-previa-descripcion {
+    grid-column: 1 / -1;
+    margin: .3rem 0 0;
+    color: #574638;
+    font-size: .925rem;
+    overflow-wrap: anywhere;
+}
+
+.vista-previa-extra { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 8px; margin-top: .6rem; }
+
+.vista-previa-maridaje {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .25rem .7rem;
+    border-radius: 999px;
+    background: #ecd5cf;
+    color: var(--tabla-vino-oscuro);
+    font-size: .8rem;
+    font-weight: 500;
+}
+
+.vista-previa-sello {
+    display: inline-block;
+    padding: 0 .5rem;
+    border: 3px solid var(--tabla-vino);
+    border-radius: 6px;
+    color: var(--tabla-vino);
+    font-family: var(--tabla-fuente-titulos);
+    font-weight: 800;
+    transform: rotate(-7deg);
+}
+
+.vista-previa.agotado .vista-previa-nombre,
+.vista-previa.agotado .vista-previa-precio,
+.vista-previa.agotado .vista-previa-descripcion { opacity: .5; }
+
+.vista-previa.agotado .vista-previa-precio { text-decoration: line-through; }
+
+.vista-previa.es-vino { background: var(--tabla-vino); color: #f4ead6; }
+.vista-previa.es-vino::before { background-image: radial-gradient(circle at 10px 10px, var(--tabla-vino) 9.5px, transparent 10px); }
+.vista-previa.es-vino .vista-previa-precio { color: #f2c879; }
+.vista-previa.es-vino .vista-previa-descripcion { color: #e6cbc4; }
+.vista-previa.es-vino .vista-previa-sello { border-color: #f4ead6; color: #f4ead6; }
+
+.vista-previa-foto {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border: 4px solid #e6d6b8;
+    margin-bottom: .9rem;
+}

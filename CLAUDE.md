@@ -48,7 +48,11 @@ Incluye:
 - Relaciones de Eloquent en los modelos; usar `with()` para evitar consultas N+1 en listados.
 - Listados de administración paginados (15 por página).
 - Vistas en `resources/views/<area>/<modulo>/`. Componentes compartidos en `resources/views/components/`.
+- Enlaces propios de un área (barra debajo del menú principal) en `resources/views/<area>/_subnav.blade.php`; el layout los muestra solo. Cada módulo agrega ahí su enlace.
 - Montos en vistas con el componente `<x-money :amount="$valor" />`.
+- Cada página empieza con `<x-page-header title="..." subtitle="...">botones</x-page-header>`; las listas vacías usan `<x-empty-state icon="bi-..." title="..." />`. Tablas con la clase `table table-tabla`, dentro de una `card`.
+- Estilos propios en `public/css/tabla.css` (colores vino, crema y madera; títulos de página con Besley y el resto con Libre Franklin). Usar `btn-primary` y las clases de ahí en lugar de colores sueltos. El menú público tiene sus propios estilos en `public/css/menu.css`.
+- Nombre y logo del negocio en `config/negocio.php` (`config('negocio.nombre')`, `config('negocio.logo')`); `APP_NAME` ("Tabla") es el nombre del sistema. La mascota Salamín es el componente `<x-mascota />` (menú público y listas vacías).
 - Mensajes de éxito o error con `session('success')` / `session('error')`; el layout ya los muestra.
 - Endpoints que consulta JavaScript devuelven JSON y viven en las rutas web del área (no en `routes/api.php`), con nombre terminado en `.datos` (por ejemplo `cocina.comandas.datos`).
 
@@ -108,9 +112,9 @@ Cada módulo se trabaja en su propia rama y entra a `develop` por pull request.
 | Base | @Narvii10 (líder técnico) | `feature/base` |
 | Menú | @Narvii10 | `feature/menu` |
 | Login y usuarios | Integrante 2 (Scrum Master) | `feature/login` |
-| Mesas | Integrante 3 | `feature/mesas` |
-| Pedidos | Integrante 4 | `feature/pedidos` |
-| Cocina | Integrante 5 | `feature/cocina` |
+| Mesas | @Narvii10 | `feature/mesas` |
+| Pedidos | Integrante 3 | `feature/pedidos` |
+| Cocina | Integrante 4 | `feature/cocina` |
 | Caja | Integrante 1 (Product Owner) | `feature/caja` |
 | Despliegue | @Narvii10 | `feature/deploy` |
 
