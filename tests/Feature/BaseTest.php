@@ -13,7 +13,16 @@ class BaseTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected bool $seed = true;
+    /**
+     * Se siembra aquí (dentro de la transacción de la prueba) y no con
+     * $seed = true, para que los datos no queden en la base de las demás pruebas.
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->seed();
+    }
 
     public function test_pagina_de_desarrollo_y_areas_cargan(): void
     {
