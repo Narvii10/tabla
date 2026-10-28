@@ -29,8 +29,30 @@ class UserFactory extends Factory
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
+            'rol' => 'mesero',
+            'activo' => true,
             'remember_token' => Str::random(10),
         ];
+    }
+
+    /**
+     * Usuario con un rol específico: User::factory()->rol('admin')->create()
+     */
+    public function rol(string $rol): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'rol' => $rol,
+        ]);
+    }
+
+    /**
+     * Usuario desactivado (no puede iniciar sesión).
+     */
+    public function inactivo(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'activo' => false,
+        ]);
     }
 
     /**
