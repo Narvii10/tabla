@@ -6,6 +6,7 @@ use App\Models\DetallePedido;
 use App\Models\Mesa;
 use App\Models\Pedido;
 use App\Models\Producto;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -22,11 +23,14 @@ class BaseTest extends TestCase
         parent::setUp();
 
         $this->seed();
+
+        // Las áreas piden sesión: entramos como el admin de los seeders
+        $this->actingAs(User::where('email', 'admin@tabla.test')->first());
     }
 
-    public function test_pagina_de_desarrollo_y_areas_cargan(): void
+    public function test_inicio_manda_al_admin_a_su_area_y_las_areas_cargan(): void
     {
-        $this->get('/')->assertOk()->assertSee('Página de desarrollo')->assertSee('admin@tabla.test');
+        $this->get('/')->assertRedirect(route('admin.index'));
 
         foreach (['admin.index', 'mesero.index', 'cocina.index', 'caja.index', 'menu.index'] as $ruta) {
             $this->get(route($ruta))->assertOk();

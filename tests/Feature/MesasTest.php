@@ -4,12 +4,23 @@ namespace Tests\Feature;
 
 use App\Models\Mesa;
 use App\Models\Pedido;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class MesasTest extends TestCase
 {
     use RefreshDatabase;
+
+    /**
+     * Las rutas de administración y mesero piden sesión: cada prueba entra como admin.
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->actingAs(User::factory()->rol('admin')->create());
+    }
 
     public function test_admin_crea_una_mesa_y_se_genera_su_qr(): void
     {

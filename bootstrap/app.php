@@ -12,7 +12,8 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // Middleware "rol" del módulo de Login: ->middleware('rol:mesero,admin')
+        $middleware->alias(['rol' => \App\Http\Middleware\VerificarRol::class]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->shouldRenderJsonWhen(

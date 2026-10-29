@@ -5,12 +5,23 @@ namespace Tests\Feature;
 use App\Models\Comanda;
 use App\Models\Mesa;
 use App\Models\Pedido;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class MapaMesasTest extends TestCase
 {
     use RefreshDatabase;
+
+    /**
+     * Las rutas de administración y mesero piden sesión: cada prueba entra como admin.
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->actingAs(User::factory()->rol('admin')->create());
+    }
 
     public function test_el_mapa_muestra_las_mesas_por_zona_con_su_estado(): void
     {
