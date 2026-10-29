@@ -138,6 +138,7 @@ Seeders: un usuario por rol (`admin@tabla.test`, `mesero@tabla.test`, `cocina@ta
 - Admin: CRUD de mesas. Al crear una mesa se genera su `token_qr` único (el modelo `Mesa` ya lo hace solo).
 - Página imprimible con el QR de cada mesa apuntando a `/menu/mesa/{token_qr}` (ruta `menu.mesa`). El QR se genera en el navegador con una librería JS desde CDN.
 - Mesero: mapa de mesas en cuadrícula con color por estado y aviso cuando una comanda de esa mesa está "listo". Se actualiza cada 5 s con `fetch` a un endpoint JSON. Clic en una mesa lleva a su pedido.
+- **Para Pedidos:** el mapa (`/mesero`, ruta `mesero.index`) enlaza cada mesa a la ruta `mesero.mesas.pedido` con el parámetro `{mesa}`. Pedidos debe crear esa ruta con ese nombre (abre el pedido de la mesa o el formulario para abrir uno); en cuanto exista, las mesas del mapa se vuelven clicables solas. Los colores de estado son las clases `estado-mesa estado-{estado}` de `tabla.css`.
 
 ### Pedidos
 - Abrir pedido en una mesa libre (la mesa pasa a ocupada).
