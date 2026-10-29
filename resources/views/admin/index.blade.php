@@ -10,6 +10,7 @@
             ['ruta' => 'admin.productos.index', 'icono' => 'bi-basket', 'nombre' => 'Productos', 'texto' => 'Platos, vinos y bebidas. Precios, fotos y agotados.'],
             ['ruta' => 'admin.categorias.index', 'icono' => 'bi-tags', 'nombre' => 'Categorías', 'texto' => 'Secciones del menú y su orden.'],
             ['ruta' => 'admin.mesas.index', 'icono' => 'bi-grid-3x3-gap', 'nombre' => 'Mesas', 'texto' => 'Números, zonas y el QR de cada mesa.'],
+            ['ruta' => 'admin.usuarios.index', 'icono' => 'bi-people', 'nombre' => 'Usuarios', 'texto' => 'Quién entra al sistema y con qué rol.'],
         ] as $acceso)
             <div class="col-sm-6 col-lg-4">
                 <a href="{{ route($acceso['ruta']) }}" class="card card-acceso h-100 text-decoration-none">

@@ -7,6 +7,7 @@ use App\Models\DetallePedido;
 use App\Models\Mesa;
 use App\Models\Pedido;
 use App\Models\Producto;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -15,6 +16,16 @@ use Tests\TestCase;
 class MenuTest extends TestCase
 {
     use RefreshDatabase;
+
+    /**
+     * Las rutas de administración y mesero piden sesión: cada prueba entra como admin.
+     */
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->actingAs(User::factory()->rol('admin')->create());
+    }
 
     // ---------- Administración ----------
 
