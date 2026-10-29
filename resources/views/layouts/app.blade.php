@@ -29,6 +29,12 @@
 
         // Área en la que estamos (según el nombre de la ruta), para mostrar sus enlaces
         $areaActual = collect(array_keys($areas))->first(fn ($area) => request()->routeIs($area.'.*'));
+
+        // La barra muestra solo las áreas del rol del usuario; el admin las ve todas
+        $rolUsuario = auth()->user()?->rol;
+        if ($rolUsuario !== 'admin') {
+            $areas = array_intersect_key($areas, [$rolUsuario => true]);
+        }
     @endphp
 
     <nav class="navbar navbar-expand-lg navbar-dark navbar-tabla">
@@ -61,6 +67,13 @@
                     @auth
                         <li class="nav-item">
                             <span class="navbar-text small"><i class="bi bi-person-circle me-1"></i>{{ auth()->user()->name }}</span>
+                        </li>
+                        <li class="nav-item py-2 py-lg-0">
+                            {{-- Cerrar sesión siempre por POST con @csrf (un enlace GET se podría disparar sin querer) --}}
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button class="btn btn-sm btn-salir"><i class="bi bi-box-arrow-right me-1"></i>Salir</button>
+                            </form>
                         </li>
                     @endauth
                 </ul>
