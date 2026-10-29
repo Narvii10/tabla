@@ -20,7 +20,11 @@ class UserSeeder extends Seeder
         ];
 
         foreach ($usuarios as $usuario) {
-            User::factory()->create($usuario);
+            // El cast "hashed" del modelo cifra la contraseña al guardarla
+            User::create($usuario + [
+                'password' => 'password',
+                'activo' => true,
+            ]);
         }
     }
 }
