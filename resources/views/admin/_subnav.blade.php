@@ -7,3 +7,7 @@
     <a class="nav-link text-nowrap @if (request()->routeIs('admin.categorias.*')) active @endif"
        href="{{ route('admin.categorias.index') }}"><i class="bi bi-tags"></i> Categorías</a>
 </li>
+<li class="nav-item">
+    <a class="nav-link text-nowrap @if (request()->routeIs('admin.mesas.*')) active @endif"
+       href="{{ route('admin.mesas.index') }}"><i class="bi bi-grid-3x3-gap"></i> Mesas</a>
+</li>

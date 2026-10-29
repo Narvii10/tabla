@@ -63,9 +63,14 @@ class Mesa extends Model
 
     /**
      * El pedido abierto actual de la mesa (si hay).
+     * El filtro va dentro de ofMany para que busque el más reciente entre los abiertos;
+     * con ->where(...)->latestOfMany() tomaba el más reciente de todos y, si ese ya
+     * estaba cerrado, la mesa parecía no tener pedido abierto.
      */
     public function pedidoAbierto(): HasOne
     {
-        return $this->hasOne(Pedido::class)->where('estado', 'abierto')->latestOfMany();
+        return $this->hasOne(Pedido::class)->ofMany(['id' => 'max'], function ($query) {
+            $query->where('estado', 'abierto');
+        });
     }
 }

@@ -425,6 +425,280 @@ a.dato-resumen.activo { box-shadow: inset 0 -3px 0 var(--tabla-vino); }
     .btn-estado.agotado:hover { background: #e5efdc; color: #2f5418; border-color: #cfe0c0; }
 }
 
+/* ---------- Mesas ---------- */
+
+/* Número de la mesa como placa, en la letra de los títulos */
+.numero-mesa {
+    display: inline-grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: .5rem;
+    background: var(--tabla-arena);
+    color: var(--tabla-madera);
+    font-family: var(--tabla-fuente-titulos);
+    font-weight: 800;
+    font-size: 1.35rem;
+    font-variant-numeric: tabular-nums;
+}
+
+/*
+ * Color por estado de la mesa: <span class="estado-mesa estado-{{ $mesa->estado }}">.
+ * Lo usan el listado de admin y el mapa de mesas del mesero.
+ * "Pidió la cuenta" es el único lleno, porque es el que pide acción.
+ */
+.estado-mesa {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .2rem .65rem;
+    border-radius: 2rem;
+    font-size: .8rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.estado-mesa::before {
+    content: '';
+    width: .5rem;
+    height: .5rem;
+    border-radius: 50%;
+    background: currentColor;
+}
+
+.estado-libre { background: #e5efdc; color: #2f5418; }
+.estado-ocupada { background: #efe7d9; color: #5d4f44; }
+.estado-esperando { background: #fbe9c9; color: #7a4a00; }
+.estado-comiendo { background: var(--tabla-vino-claro); color: var(--tabla-vino-oscuro); }
+.estado-cuenta { background: var(--tabla-vino); color: #fffdf8; }
+
+/* ---------- Mapa de mesas del mesero (mesero/mesas/index) ---------- */
+
+.leyenda-mesas { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.leyenda-mesas strong { font-variant-numeric: tabular-nums; }
+
+.aviso-listas {
+    display: inline-flex;
+    align-items: center;
+    gap: .4rem;
+    padding: .2rem .7rem;
+    border-radius: 2rem;
+    background: var(--tabla-mostaza);
+    color: var(--tabla-madera);
+    font-size: .8rem;
+    font-weight: 600;
+}
+
+.estado-conexion { margin-left: auto; color: var(--tabla-gris); font-size: .8rem; font-variant-numeric: tabular-nums; }
+.estado-conexion.sin-conexion { color: #8f2424; font-weight: 600; }
+
+/* Cada zona es un cuarto del plano con su propio piso: madera clara el salón, verde la terraza */
+.zona-mesas {
+    margin-bottom: 1.25rem;
+    padding: 1rem 1rem 1.1rem;
+    border-radius: 1rem;
+    background: #ece2d0;
+}
+
+.zona-terraza { background: #e2e9d6; }
+
+.zona-mesas-encabezado {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: .25rem 1rem;
+    margin-bottom: .85rem;
+}
+
+.zona-mesas-titulo {
+    margin: 0;
+    font-family: var(--tabla-fuente-titulos);
+    font-weight: 800;
+    font-size: 1.3rem;
+    letter-spacing: -.01em;
+}
+
+.zona-mesas-conteo { color: #5d4f44; font-size: .85rem; font-variant-numeric: tabular-nums; }
+
+.cuadricula-mesas {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(10.5rem, 1fr));
+    gap: .75rem;
+}
+
+/* En celular, dos mesas por fila para ver el local completo sin bajar tanto */
+@media (max-width: 575.98px) {
+    .zona-mesas { padding: .85rem .65rem .75rem; }
+    .cuadricula-mesas { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .5rem; }
+    .mesa-tile { padding: .6rem .5rem .75rem; }
+    .plano-mesa { max-width: 120px; }
+}
+
+/*
+ * Cada mesa: el dibujo desde arriba (components/plano-mesa) y su estado debajo.
+ * El color de la mesa y las sillas cambia con data-estado por medio de estas variables.
+ */
+.mesa-tile {
+    --mesa-tabla: #dcebcf;
+    --mesa-silla: #9cc086;
+    --mesa-numero: #2f5418;
+
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .5rem;
+    padding: .75rem .75rem .9rem;
+    border: 1px solid rgba(47, 34, 27, .08);
+    border-radius: .85rem;
+    background: var(--tabla-papel);
+    color: var(--tabla-texto);
+    text-align: center;
+    text-decoration: none;
+    touch-action: manipulation;
+    transition: transform 140ms var(--tabla-ease), border-color 150ms ease;
+}
+
+a.mesa-tile:active { transform: scale(.97); }
+
+@media (hover: hover) and (pointer: fine) {
+    a.mesa-tile:hover { border-color: var(--tabla-borde-fuerte); color: var(--tabla-texto); }
+}
+
+.mesa-tile[data-estado="ocupada"] { --mesa-tabla: #e6d9c5; --mesa-silla: #b9a68c; --mesa-numero: #4a3b30; }
+.mesa-tile[data-estado="esperando"] { --mesa-tabla: #f6d792; --mesa-silla: #d9a646; --mesa-numero: #5e3a00; }
+.mesa-tile[data-estado="comiendo"] { --mesa-tabla: #ecc4bd; --mesa-silla: #c98a80; --mesa-numero: #5a1f2a; }
+/* La que pidió la cuenta: mesa color vino y borde vino; es la que pide que alguien vaya */
+.mesa-tile[data-estado="cuenta"] {
+    --mesa-tabla: var(--tabla-vino);
+    --mesa-silla: #c27f88;
+    --mesa-numero: #fffdf8;
+    border-color: var(--tabla-vino);
+    box-shadow: 0 0 0 1px var(--tabla-vino);
+}
+
+.plano-mesa { display: block; width: 100%; max-width: 150px; height: auto; }
+.plano-mesa-tabla { fill: var(--mesa-tabla); transition: fill 300ms ease; }
+.plano-mesa-silla { fill: var(--mesa-silla); transition: fill 300ms ease; }
+
+.plano-mesa-numero {
+    fill: var(--mesa-numero);
+    font-family: var(--tabla-fuente-titulos);
+    font-weight: 800;
+    font-size: 26px;
+    transition: fill 300ms ease;
+}
+
+.mesa-tile-info { display: flex; flex-direction: column; align-items: center; gap: .3rem; }
+.mesa-tile-tiempo { color: var(--tabla-gris); font-size: .8rem; min-height: 1.2em; font-variant-numeric: tabular-nums; }
+
+/* Comanda lista: borde mostaza grueso y el aviso abajo */
+.mesa-tile.con-lista { box-shadow: 0 0 0 3px var(--tabla-mostaza); border-color: var(--tabla-mostaza); }
+
+.mesa-tile-aviso {
+    display: inline-flex;
+    align-items: center;
+    gap: .35rem;
+    padding: .2rem .6rem;
+    border-radius: 2rem;
+    background: var(--tabla-mostaza);
+    color: var(--tabla-madera);
+    font-size: .8rem;
+    font-weight: 600;
+}
+
+.mesa-tile-aviso[hidden] { display: none; }
+
+/* Cuando la comanda acaba de quedar lista, la mesa late tres veces para llamar la atención */
+@media (prefers-reduced-motion: no-preference) {
+    .mesa-tile.recien-lista { animation: latir-mesa 600ms var(--tabla-ease) 3; }
+}
+
+@keyframes latir-mesa {
+    0%, 100% { transform: scale(1); }
+    40% { transform: scale(1.04); }
+}
+
+/* ---------- Tarjetas de QR para imprimir (admin/mesas/imprimir) ---------- */
+
+.hoja-qr {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    gap: 1.25rem;
+}
+
+/* Cada tarjeta lleva una línea punteada alrededor para recortarla */
+.tarjeta-qr {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem 1.25rem 1.25rem;
+    background: #fff;
+    border: 2px dashed var(--tabla-borde-fuerte);
+    border-radius: .75rem;
+    text-align: center;
+    break-inside: avoid;
+}
+
+.tarjeta-qr-logo { width: 96px; height: auto; }
+
+.tarjeta-qr-mesa {
+    margin: .6rem 0 1rem;
+    font-family: var(--tabla-fuente-titulos);
+    font-weight: 800;
+    font-size: 2.25rem;
+    line-height: 1;
+    color: #8c0d14;
+}
+
+.tarjeta-qr-codigo {
+    width: 100%;
+    max-width: 190px;
+    aspect-ratio: 1;
+    display: grid;
+    place-items: center;
+}
+
+.tarjeta-qr-codigo svg { display: block; width: 100%; height: 100%; }
+.tarjeta-qr-codigo svg path { fill: var(--tabla-madera); } /* casi negro: se escanea igual de bien */
+
+/* Si no carga la librería del QR, queda la dirección escrita */
+.tarjeta-qr-sin-js { font-size: .7rem; color: var(--tabla-gris); overflow-wrap: anywhere; }
+
+.tarjeta-qr-instruccion { margin: 1rem 0 0; font-weight: 600; font-size: .95rem; }
+.tarjeta-qr-zona { margin: .2rem 0 0; font-size: .8rem; color: var(--tabla-gris); }
+
+/* ---------- Al imprimir ---------- */
+
+@page { size: letter; margin: 12mm; }
+
+@media print {
+    .navbar-tabla,
+    .subnav-tabla,
+    .alert,
+    .no-imprimir { display: none !important; }
+
+    body { background: #fff; }
+    main.container { max-width: none; padding: 0 !important; }
+
+    /*
+     * 2 x 2 tarjetas por hoja carta. El área útil mide 191 x 255 mm (carta menos 12 mm de margen),
+     * así que cada tarjeta mide 120 mm de alto: dos filas más 8 mm de separación = 248 mm.
+     */
+    .hoja-qr { grid-template-columns: repeat(2, 1fr); gap: 8mm; }
+    .tarjeta-qr { height: 120mm; padding: 6mm; justify-content: center; border-color: #999; overflow: hidden; }
+    .tarjeta-qr-logo { width: 26mm; margin-bottom: 6mm; }
+    /* El número de mesa se ve en pantalla para saber cuál es cada tarjeta, pero no sale en el papel */
+    .tarjeta-qr-mesa { display: none; }
+    .tarjeta-qr-codigo { max-width: 60mm; } /* unos 6 cm: se lee bien con el celular a un brazo de distancia */
+    .tarjeta-qr-instruccion { margin-top: 4mm; font-size: 11pt; }
+
+    /* Que el navegador imprima los colores del logo y el QR tal cual */
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+}
+
 /* Salamín (components/mascota.blade.php): cara feliz o triste según data-humor */
 .mascota { overflow: visible; }
 .mascota .mascota-boca-triste { display: none; }
