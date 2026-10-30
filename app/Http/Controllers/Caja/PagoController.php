@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Caja;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Caja\PagoRequest;
+use App\Models\CierreCaja;
 use App\Models\Pago;
 use App\Models\Pedido;
 use Illuminate\Http\RedirectResponse;
@@ -18,6 +19,11 @@ class PagoController extends Controller
 
             if (! $bloqueado->estaAbierto()) {
                 return 'Este pedido ya está cerrado.';
+            }
+
+            // Un pago después del cierre no quedaría contado en ningún cierre
+            if (CierreCaja::deHoy()) {
+                return 'La caja de hoy ya se cerró. Este pedido se cobra mañana.';
             }
 
             $monto = round((float) $request->validated('monto'), 2);
@@ -43,8 +49,7 @@ class PagoController extends Controller
 
             $bloqueado->load('pagos');
             if ($bloqueado->saldo() <= 0) {
-                $bloqueado->update(['estado' => 'cerrado', 'cerrado_en' => now()]);
-                $bloqueado->mesa->update(['estado' => 'libre']);
+                $bloqueado->cerrar();
             }
 
             return $pago;

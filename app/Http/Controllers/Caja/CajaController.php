@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Caja;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Caja\PropinaRequest;
+use App\Models\CierreCaja;
 use App\Models\DetallePedido;
 use App\Models\Pedido;
 use Illuminate\Http\RedirectResponse;
@@ -53,7 +54,8 @@ class CajaController extends Controller
             'productos' => $productos,
             'subtotal' => $subtotal,
             'propinaSugerida' => round($subtotal * 0.10, 2),
-            'division' => self::dividir($saldoCentavos, 2),
+            'division' => Pedido::dividir($saldoCentavos, 2),
+            'cajaCerrada' => CierreCaja::deHoy() !== null,
         ]);
     }
 
@@ -82,25 +84,9 @@ class CajaController extends Controller
             return redirect()->route('caja.pedidos.show', $pedido)->with('error', 'Todavía hay saldo por cobrar.');
         }
 
-        $pedido->update(['estado' => 'cerrado', 'cerrado_en' => now()]);
-        $pedido->mesa->update(['estado' => 'libre']);
+        $pedido->cerrar();
 
         return redirect()->route('caja.index')
             ->with('success', "Cuenta cerrada. La mesa {$pedido->mesa->numero} está libre.");
-    }
-
-    public static function dividir(int $centavos, int $personas): array
-    {
-        if ($personas < 1) {
-            return [$centavos];
-        }
-
-        $base = intdiv($centavos, $personas);
-        $resto = $centavos % $personas;
-
-        return array_map(
-            fn (int $i) => $base + ($i < $resto ? 1 : 0),
-            range(0, $personas - 1)
-        );
     }
 }

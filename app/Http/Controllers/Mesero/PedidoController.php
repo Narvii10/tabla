@@ -215,8 +215,7 @@ class PedidoController extends Controller
                 ->with('error', 'Solo se puede cancelar un pedido sin productos.');
         }
 
-        $pedido->update(['estado' => 'cancelado', 'cerrado_en' => now()]);
-        $pedido->mesa->update(['estado' => 'libre']);
+        $pedido->cerrar('cancelado');
 
         return redirect()->route('mesero.index')
             ->with('success', "Pedido cancelado. La mesa {$pedido->mesa->numero} está libre.");

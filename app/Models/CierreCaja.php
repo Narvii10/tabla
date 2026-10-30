@@ -28,6 +28,14 @@ class CierreCaja extends Model
     }
 
     /**
+     * El cierre de hoy, si ya se hizo.
+     */
+    public static function deHoy(): ?self
+    {
+        return static::whereDate('fecha', today())->first();
+    }
+
+    /**
      * Usuario (caja) que hizo el cierre.
      */
     public function cajero(): BelongsTo
