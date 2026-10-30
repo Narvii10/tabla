@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\MesaController;
 use App\Http\Controllers\Admin\ProductoController;
 use App\Http\Controllers\Admin\UsuarioController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Cocina\CocinaController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\Mesero\MapaMesasController;
 use Illuminate\Support\Facades\Route;
@@ -51,7 +52,10 @@ Route::prefix('mesero')->name('mesero.')->middleware(['auth', 'rol:mesero,admin'
 
 // Cocina (roles: cocina, admin)
 Route::prefix('cocina')->name('cocina.')->middleware(['auth', 'rol:cocina,admin'])->group(function () {
-    Route::view('/', 'cocina.index')->name('index');
+    Route::get('/', [CocinaController::class, 'index'])->name('index');
+    Route::get('comandas/datos', [CocinaController::class, 'datos'])->name('comandas.datos');
+    Route::patch('comandas/{comanda}/estado', [CocinaController::class, 'cambiarEstado'])->name('comandas.estado');
+    Route::patch('productos/{producto}/agotado', [CocinaController::class, 'marcarAgotado'])->name('productos.agotado');
 });
 
 // Caja (roles: caja, admin)

@@ -979,3 +979,118 @@ span.btn-estado { cursor: default; }
     .resumen-usuarios .dato-resumen:nth-child(odd) { border-left: 0; }
     .resumen-usuarios .dato-resumen:nth-child(n+3) { border-top: 1px solid var(--tabla-borde); }
 }
+
+/* =========================================================================
+   Cocina (cocina/index)
+   ========================================================================= */
+
+.resumen-cocina {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem 1rem;
+    padding: .85rem 1rem;
+    border: 1px solid var(--tabla-borde);
+    border-radius: .75rem;
+    background: var(--tabla-papel);
+}
+
+.resumen-cocina-titulo { font-weight: 600; }
+.resumen-cocina-lista { display: flex; flex-wrap: wrap; gap: .4rem; }
+
+.chip-resumen {
+    padding: .25rem .7rem;
+    border-radius: 2rem;
+    background: var(--tabla-arena);
+    font-size: .9rem;
+}
+
+.chip-resumen strong { font-family: var(--tabla-fuente-titulos); font-size: 1.05rem; margin-right: .1rem; }
+
+.tablero-cocina { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; align-items: start; }
+
+@media (max-width: 991.98px) {
+    .tablero-cocina { grid-template-columns: 1fr; }
+}
+
+.columna-cocina { padding: .85rem; border-radius: 1rem; background: #ece2d0; }
+
+.columna-cocina-titulo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 0 .75rem;
+    font-family: var(--tabla-fuente-titulos);
+    font-weight: 800;
+    font-size: 1.2rem;
+}
+
+.columna-cocina-cuenta {
+    min-width: 2rem;
+    padding: .1rem .5rem;
+    border-radius: 2rem;
+    background: var(--tabla-papel);
+    font-family: var(--tabla-fuente);
+    font-size: .9rem;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+}
+
+.columna-cocina-lista { display: grid; gap: .75rem; }
+.columna-cocina-vacia { margin: 0; padding: 1rem; text-align: center; color: #5d4f44; font-size: .9rem; }
+
+/* Cada comanda: franja arriba con el color de la espera (verde, amarillo, rojo) */
+.comanda-cocina {
+    --espera: #4f8a35;
+    overflow: hidden;
+    border-radius: .75rem;
+    background: var(--tabla-papel);
+    border: 1px solid rgba(47, 34, 27, .08);
+}
+
+.comanda-cocina[data-espera="amarillo"] { --espera: #e0a526; }
+.comanda-cocina[data-espera="rojo"] { --espera: #b8352a; }
+.comanda-cocina[data-espera="lista"] { --espera: var(--tabla-mostaza); }
+
+.comanda-cocina-encabezado {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: .5rem;
+    padding: .6rem .9rem;
+    background: var(--espera);
+    color: #fffdf8;
+}
+
+.comanda-cocina[data-espera="amarillo"] .comanda-cocina-encabezado,
+.comanda-cocina[data-espera="lista"] .comanda-cocina-encabezado { color: var(--tabla-madera); }
+
+.comanda-cocina-mesa { font-family: var(--tabla-fuente-titulos); font-weight: 800; font-size: 1.35rem; }
+.comanda-cocina-tiempo { font-size: .85rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.comanda-cocina-productos { margin: 0; padding: .75rem .9rem .25rem; list-style: none; display: grid; gap: .45rem; font-size: 1.05rem; }
+.comanda-cocina-productos strong { font-family: var(--tabla-fuente-titulos); font-size: 1.2rem; margin-right: .15rem; }
+
+/* La nota resaltada: lo que no se puede olvidar */
+.nota-cocina {
+    display: block;
+    margin-top: .15rem;
+    padding: .2rem .5rem;
+    border-radius: .35rem;
+    background: #fff3c4;
+    color: #6b4200;
+    font-weight: 600;
+    font-size: .9rem;
+}
+
+.comanda-cocina-boton { margin: .5rem .9rem .9rem; width: calc(100% - 1.8rem) !important; }
+
+@media (prefers-reduced-motion: no-preference) {
+    .comanda-cocina.nueva { animation: entrar-comanda 500ms var(--tabla-ease); }
+}
+
+@keyframes entrar-comanda {
+    from { opacity: 0; transform: translateY(-10px) scale(.98); }
+    to { opacity: 1; transform: none; }
+}
+
