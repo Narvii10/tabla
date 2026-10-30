@@ -979,3 +979,324 @@ span.btn-estado { cursor: default; }
     .resumen-usuarios .dato-resumen:nth-child(odd) { border-left: 0; }
     .resumen-usuarios .dato-resumen:nth-child(n+3) { border-top: 1px solid var(--tabla-borde); }
 }
+
+/* =========================================================================
+   Cocina (cocina/index)
+   ========================================================================= */
+
+.resumen-cocina {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem 1rem;
+    padding: .85rem 1rem;
+    border: 1px solid var(--tabla-borde);
+    border-radius: .75rem;
+    background: var(--tabla-papel);
+}
+
+.resumen-cocina-titulo { font-weight: 600; }
+.resumen-cocina-lista { display: flex; flex-wrap: wrap; gap: .4rem; }
+
+.chip-resumen {
+    padding: .25rem .7rem;
+    border-radius: 2rem;
+    background: var(--tabla-arena);
+    font-size: .9rem;
+}
+
+.chip-resumen strong { font-family: var(--tabla-fuente-titulos); font-size: 1.05rem; margin-right: .1rem; }
+
+.tablero-cocina { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; align-items: start; }
+
+@media (max-width: 991.98px) {
+    .tablero-cocina { grid-template-columns: 1fr; }
+}
+
+.columna-cocina { padding: .85rem; border-radius: 1rem; background: #ece2d0; }
+
+.columna-cocina-titulo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 0 .75rem;
+    font-family: var(--tabla-fuente-titulos);
+    font-weight: 800;
+    font-size: 1.2rem;
+}
+
+.columna-cocina-cuenta {
+    min-width: 2rem;
+    padding: .1rem .5rem;
+    border-radius: 2rem;
+    background: var(--tabla-papel);
+    font-family: var(--tabla-fuente);
+    font-size: .9rem;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+}
+
+.columna-cocina-lista { display: grid; gap: .75rem; }
+.columna-cocina-vacia { margin: 0; padding: 1rem; text-align: center; color: #5d4f44; font-size: .9rem; }
+
+/* Cada comanda: franja arriba con el color de la espera (verde, amarillo, rojo) */
+.comanda-cocina {
+    --espera: #4f8a35;
+    overflow: hidden;
+    border-radius: .75rem;
+    background: var(--tabla-papel);
+    border: 1px solid rgba(47, 34, 27, .08);
+}
+
+.comanda-cocina[data-espera="amarillo"] { --espera: #e0a526; }
+.comanda-cocina[data-espera="rojo"] { --espera: #b8352a; }
+.comanda-cocina[data-espera="lista"] { --espera: var(--tabla-mostaza); }
+
+.comanda-cocina-encabezado {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: .5rem;
+    padding: .6rem .9rem;
+    background: var(--espera);
+    color: #fffdf8;
+}
+
+.comanda-cocina[data-espera="amarillo"] .comanda-cocina-encabezado,
+.comanda-cocina[data-espera="lista"] .comanda-cocina-encabezado { color: var(--tabla-madera); }
+
+.comanda-cocina-mesa { font-family: var(--tabla-fuente-titulos); font-weight: 800; font-size: 1.35rem; }
+.comanda-cocina-tiempo { font-size: .85rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+.comanda-cocina-productos { margin: 0; padding: .75rem .9rem .25rem; list-style: none; display: grid; gap: .45rem; font-size: 1.05rem; }
+.comanda-cocina-productos strong { font-family: var(--tabla-fuente-titulos); font-size: 1.2rem; margin-right: .15rem; }
+
+/* La nota resaltada: lo que no se puede olvidar */
+.nota-cocina {
+    display: block;
+    margin-top: .15rem;
+    padding: .2rem .5rem;
+    border-radius: .35rem;
+    background: #fff3c4;
+    color: #6b4200;
+    font-weight: 600;
+    font-size: .9rem;
+}
+
+.comanda-cocina-boton { margin: .5rem .9rem .9rem; width: calc(100% - 1.8rem) !important; }
+
+@media (prefers-reduced-motion: no-preference) {
+    .comanda-cocina.nueva { animation: entrar-comanda 500ms var(--tabla-ease); }
+}
+
+@keyframes entrar-comanda {
+    from { opacity: 0; transform: translateY(-10px) scale(.98); }
+    to { opacity: 1; transform: none; }
+}
+
+/* ---------- Pedidos (mesero/pedidos) ---------- */
+
+/* Tarjeta de un pedido abierto en la lista */
+.tarjeta-pedido { color: var(--tabla-texto); transition: border-color 150ms ease, transform 140ms var(--tabla-ease); }
+.tarjeta-pedido:active { transform: scale(.98); }
+
+@media (hover: hover) and (pointer: fine) {
+    .tarjeta-pedido:hover { border-color: var(--tabla-borde-fuerte); color: var(--tabla-texto); }
+}
+
+/* Botones de categoría sobre el catálogo: se desplazan de lado en celular */
+.categorias-pedido { display: flex; gap: .4rem; overflow-x: auto; padding-bottom: .25rem; }
+.btn-categoria {
+    flex-shrink: 0;
+    border: 1px solid var(--tabla-borde-fuerte);
+    border-radius: 2rem;
+    background: var(--tabla-papel);
+    color: var(--tabla-gris);
+    white-space: nowrap;
+}
+.btn-categoria.activo { background: var(--tabla-vino); border-color: var(--tabla-vino); color: #fffdf8; }
+
+/* Catálogo: una fila por producto, todo el renglón se toca */
+.catalogo-titulo {
+    margin: 1rem 0 .4rem;
+    font-family: var(--tabla-fuente);
+    font-size: .8rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--tabla-gris);
+}
+.catalogo-seccion[hidden], .item-catalogo[hidden] { display: none; }
+
+.item-catalogo {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    width: 100%;
+    min-height: 56px;
+    padding: .55rem .25rem;
+    border: 0;
+    border-bottom: 1px solid var(--tabla-borde);
+    background: transparent;
+    color: var(--tabla-texto);
+    touch-action: manipulation;
+}
+.item-catalogo:active:not(:disabled) { background: var(--tabla-arena); }
+.item-catalogo.agotado { opacity: .55; }
+.item-descripcion { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* Líneas del pedido: cantidad, producto con su nota y monto */
+.linea-pedido { display: flex; align-items: flex-start; gap: .6rem; background: transparent; }
+.linea-cantidad { min-width: 2.2rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.linea-nota { margin-top: .1rem; color: #7a4a00; font-size: .85rem; }
+
+/* Estado de una comanda (ronda) */
+.estado-comanda {
+    padding: .15rem .6rem;
+    border-radius: 2rem;
+    font-size: .78rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+.estado-comanda-pendiente { background: #efe7d9; color: #5d4f44; }
+.estado-comanda-preparando { background: #fbe9c9; color: #7a4a00; }
+.estado-comanda-listo { background: var(--tabla-mostaza); color: var(--tabla-madera); font-weight: 600; }
+.estado-comanda-entregado { background: #e5efdc; color: #2f5418; }
+
+/* Columna del pedido: en pantalla ancha se queda a la vista mientras se baja por el catálogo */
+#pedido-actual { scroll-margin-top: 1rem; }
+@media (min-width: 992px) {
+    .columna-pedido {
+        position: sticky;
+        top: 1rem;
+        align-self: flex-start;
+        max-height: calc(100vh - 2rem);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
+}
+
+/* Celular: barra fija abajo con el total y un botón para subir al pedido */
+.barra-pedido {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1020;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+    min-height: 56px;
+    padding: .6rem 1rem calc(.6rem + env(safe-area-inset-bottom));
+    background: var(--tabla-madera);
+    color: #f4ead6;
+    text-decoration: none;
+    box-shadow: 0 -.25rem .75rem rgba(47, 34, 27, .2);
+}
+.barra-pedido:hover, .barra-pedido:focus { color: #fffdf8; }
+.espacio-barra-pedido { height: 4rem; }
+
+/* Aviso para ofrecer el vino sugerido */
+.alert-vino { background: var(--tabla-vino-claro); border-color: #e4c9c5; color: var(--tabla-vino-oscuro); }
+
+/* Componentes de Bootstrap que solo usa Pedidos, con los colores de la marca */
+.card-header {
+    padding: .8rem 1rem;
+    font-weight: 600;
+    background: var(--tabla-papel);
+}
+
+.list-group { --bs-list-group-bg: transparent; --bs-list-group-border-color: var(--tabla-borde); }
+
+.modal-content {
+    --bs-modal-bg: var(--tabla-papel);
+    --bs-modal-border-color: var(--tabla-borde);
+    --bs-modal-border-radius: .75rem;
+    --bs-modal-header-border-color: var(--tabla-borde);
+    --bs-modal-footer-border-color: var(--tabla-borde);
+}
+
+.modal-title { font-family: var(--tabla-fuente); font-weight: 600; }
+
+/* Aviso neutro (pedido cerrado, cuenta ya en caja) */
+.alert-aviso { background: var(--tabla-arena); border-color: var(--tabla-borde-fuerte); color: var(--tabla-gris); }
+
+.tarjeta-pedido-cuenta { border-color: var(--tabla-vino); background: var(--tabla-vino-claro); }
+
+@media (hover: hover) and (pointer: fine) {
+    .tarjeta-pedido-cuenta:hover { border-color: var(--tabla-vino-oscuro); }
+}
+
+/* ---------- Caja (caja/show y caja/cierre) ---------- */
+
+/* Lo que falta por cobrar, lo primero que mira la cajera */
+.saldo-caja { font-size: 1.9rem; font-weight: 700; color: var(--tabla-vino); font-variant-numeric: tabular-nums; }
+
+/* Botones grandes para elegir método de pago o propina */
+.opciones-pago { display: flex; flex-wrap: wrap; gap: .5rem; }
+.opcion-pago {
+    flex: 1 1 0;
+    min-width: 6.5rem;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .4rem;
+    padding: .5rem .75rem;
+    border: 1px solid var(--tabla-borde-fuerte);
+    border-radius: .6rem;
+    background: var(--tabla-papel);
+    color: var(--tabla-texto);
+    font-weight: 500;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    touch-action: manipulation;
+}
+.opcion-metodo { flex-direction: column; gap: .15rem; }
+.opcion-metodo .bi { font-size: 1.4rem; }
+.btn-check:checked + .opcion-pago { border-color: var(--tabla-vino); background: var(--tabla-vino); color: #fffdf8; }
+.btn-check:focus-visible + .opcion-pago { outline: 3px solid rgba(200, 150, 62, .7); outline-offset: 2px; }
+
+/* Campo grande para "¿Con cuánto paga?" y "efectivo contado" */
+.input-recibido .form-control,
+.input-recibido .input-group-text { font-size: 1.75rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.input-recibido .form-control { min-height: 64px; }
+
+/* Montos rápidos debajo del campo: Exacto, Q 50, Q 100... */
+.billetes { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .5rem; }
+.billete { flex: 1 1 0; min-width: 5rem; min-height: 44px; font-weight: 600; }
+
+/* Caja del vuelto (y de la diferencia en el cierre): cambia de color según el caso */
+.vuelto-caja {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: .75rem;
+    padding: .9rem 1rem;
+    border: 2px dashed var(--tabla-borde-fuerte);
+    border-radius: .75rem;
+    background: var(--tabla-arena);
+    color: var(--tabla-gris);
+    text-align: center;
+}
+.vuelto-caja-titulo { font-size: .85rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+.vuelto-caja-monto { font-size: 2.6rem; font-weight: 700; line-height: 1.15; font-variant-numeric: tabular-nums; }
+.vuelto-caja[data-estado="ok"] { border: 2px solid #9cc086; background: #e5efdc; color: #2f5418; }
+.vuelto-caja[data-estado="exacto"] { border: 2px solid #cfe0c0; background: #eef5e8; color: #2f5418; }
+.vuelto-caja[data-estado="falta"] { border: 2px solid #e2a8a2; background: #f8e1df; color: #8f2424; }
+
+/* Aviso después de cobrar: el vuelto que hay que entregar. No se cierra solo */
+.aviso-vuelto {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border: 2px solid #9cc086;
+    background: #e5efdc;
+    color: #2f5418;
+    box-shadow: 0 .25rem .75rem rgba(47, 84, 24, .12);
+}
+.aviso-vuelto-icono { font-size: 2.5rem; }
+.aviso-vuelto-titulo { font-weight: 600; }
+.aviso-vuelto-monto { font-size: 2.6rem; font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; }
