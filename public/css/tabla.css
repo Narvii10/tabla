@@ -979,3 +979,97 @@ span.btn-estado { cursor: default; }
     .resumen-usuarios .dato-resumen:nth-child(odd) { border-left: 0; }
     .resumen-usuarios .dato-resumen:nth-child(n+3) { border-top: 1px solid var(--tabla-borde); }
 }
+
+/* ---------- Pedidos (mesero/pedidos) ---------- */
+
+/* Tarjeta de un pedido abierto en la lista */
+.tarjeta-pedido { color: var(--tabla-texto); transition: border-color 150ms ease, transform 140ms var(--tabla-ease); }
+.tarjeta-pedido:active { transform: scale(.98); }
+
+@media (hover: hover) and (pointer: fine) {
+    .tarjeta-pedido:hover { border-color: var(--tabla-borde-fuerte); color: var(--tabla-texto); }
+}
+
+/* Botones de categoría sobre el catálogo: se desplazan de lado en celular */
+.categorias-pedido { display: flex; gap: .4rem; overflow-x: auto; padding-bottom: .25rem; }
+.btn-categoria {
+    flex-shrink: 0;
+    border: 1px solid var(--tabla-borde-fuerte);
+    border-radius: 2rem;
+    background: var(--tabla-papel);
+    color: var(--tabla-gris);
+    white-space: nowrap;
+}
+.btn-categoria.activo { background: var(--tabla-vino); border-color: var(--tabla-vino); color: #fffdf8; }
+
+/* Catálogo: una fila por producto, todo el renglón se toca */
+.catalogo-titulo {
+    margin: 1rem 0 .4rem;
+    font-family: var(--tabla-fuente);
+    font-size: .8rem;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--tabla-gris);
+}
+.catalogo-seccion[hidden], .item-catalogo[hidden] { display: none; }
+
+.item-catalogo {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    width: 100%;
+    min-height: 56px;
+    padding: .55rem .25rem;
+    border: 0;
+    border-bottom: 1px solid var(--tabla-borde);
+    background: transparent;
+    color: var(--tabla-texto);
+    touch-action: manipulation;
+}
+.item-catalogo:active:not(:disabled) { background: var(--tabla-arena); }
+.item-catalogo.agotado { opacity: .55; }
+.item-descripcion { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+
+/* Líneas del pedido: cantidad, producto con su nota y monto */
+.linea-pedido { display: flex; align-items: flex-start; gap: .6rem; background: transparent; }
+.linea-cantidad { min-width: 2.2rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.linea-nota { margin-top: .1rem; color: #7a4a00; font-size: .85rem; }
+
+/* Estado de una comanda (ronda) */
+.estado-comanda {
+    padding: .15rem .6rem;
+    border-radius: 2rem;
+    font-size: .78rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+.estado-comanda-pendiente { background: #efe7d9; color: #5d4f44; }
+.estado-comanda-preparando { background: #fbe9c9; color: #7a4a00; }
+.estado-comanda-listo { background: var(--tabla-mostaza); color: var(--tabla-madera); font-weight: 600; }
+.estado-comanda-entregado { background: #e5efdc; color: #2f5418; }
+
+/* Aviso para ofrecer el vino sugerido */
+.alert-vino { background: var(--tabla-vino-claro); border-color: #e4c9c5; color: var(--tabla-vino-oscuro); }
+
+/* Componentes de Bootstrap que solo usa Pedidos, con los colores de la marca */
+.card-header {
+    padding: .8rem 1rem;
+    font-weight: 600;
+    background: var(--tabla-papel);
+}
+
+.list-group { --bs-list-group-bg: transparent; --bs-list-group-border-color: var(--tabla-borde); }
+
+.modal-content {
+    --bs-modal-bg: var(--tabla-papel);
+    --bs-modal-border-color: var(--tabla-borde);
+    --bs-modal-border-radius: .75rem;
+    --bs-modal-header-border-color: var(--tabla-borde);
+    --bs-modal-footer-border-color: var(--tabla-borde);
+}
+
+.modal-title { font-family: var(--tabla-fuente); font-weight: 600; }
+
+/* Aviso neutro (pedido cerrado, cuenta ya en caja) */
+.alert-aviso { background: var(--tabla-arena); border-color: var(--tabla-borde-fuerte); color: var(--tabla-gris); }

@@ -64,6 +64,14 @@ class Pedido extends Model
     }
 
     /**
+     * Si el pedido sigue abierto (Pedidos y Caja no tocan uno cerrado o cancelado).
+     */
+    public function estaAbierto(): bool
+    {
+        return $this->estado === 'abierto';
+    }
+
+    /**
      * Suma de cantidad * precio_unitario de todos los productos.
      */
     public function subtotal(): float
