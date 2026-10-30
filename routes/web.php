@@ -5,6 +5,9 @@ use App\Http\Controllers\Admin\MesaController;
 use App\Http\Controllers\Admin\ProductoController;
 use App\Http\Controllers\Admin\UsuarioController;
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Caja\CajaController;
+use App\Http\Controllers\Caja\CierreCajaController;
+use App\Http\Controllers\Caja\PagoController;
 use App\Http\Controllers\Cocina\CocinaController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\Mesero\DetallePedidoController;
@@ -75,7 +78,12 @@ Route::prefix('cocina')->name('cocina.')->middleware(['auth', 'rol:cocina,admin'
 
 // Caja (roles: caja, admin)
 Route::prefix('caja')->name('caja.')->middleware(['auth', 'rol:caja,admin'])->group(function () {
-    Route::view('/', 'caja.index')->name('index');
+    Route::get('/', [CajaController::class, 'index'])->name('index');
+    Route::get('pedidos/{pedido}', [CajaController::class, 'show'])->name('pedidos.show');
+    Route::patch('pedidos/{pedido}/propina', [CajaController::class, 'actualizarPropina'])->name('pedidos.propina');
+    Route::post('pedidos/{pedido}/pagos', [PagoController::class, 'store'])->name('pedidos.pagos.store');
+    Route::get('cierre', [CierreCajaController::class, 'create'])->name('cierre.create');
+    Route::post('cierre', [CierreCajaController::class, 'store'])->name('cierre.store');
 });
 
 // Menú público (sin login)

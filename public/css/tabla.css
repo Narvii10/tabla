@@ -1187,3 +1187,9 @@ span.btn-estado { cursor: default; }
 
 /* Aviso neutro (pedido cerrado, cuenta ya en caja) */
 .alert-aviso { background: var(--tabla-arena); border-color: var(--tabla-borde-fuerte); color: var(--tabla-gris); }
+
+.tarjeta-pedido-cuenta { border-color: var(--tabla-vino); background: var(--tabla-vino-claro); }
+
+@media (hover: hover) and (pointer: fine) {
+    .tarjeta-pedido-cuenta:hover { border-color: var(--tabla-vino-oscuro); }
+}
