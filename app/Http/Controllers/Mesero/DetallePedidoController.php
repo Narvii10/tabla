@@ -56,8 +56,7 @@ class DetallePedidoController extends Controller
             return $this->pedidoCerrado($pedido);
         }
 
-        $respuesta = redirect()->route('mesero.pedidos.show', $pedido)
-            ->with('success', "«{$producto->nombre}» agregado al pedido.");
+        $respuesta = redirect()->route('mesero.pedidos.show', $pedido);
 
         // Si el plato tiene vino sugerido (y hay), la pantalla le recuerda al mesero ofrecerlo
         if ($producto->vinoSugerido?->disponible) {
@@ -85,8 +84,7 @@ class DetallePedidoController extends Controller
 
         $detalle->delete();
 
-        return redirect()->route('mesero.pedidos.show', $pedido)
-            ->with('success', 'Producto quitado del pedido.');
+        return redirect()->route('mesero.pedidos.show', $pedido);
     }
 
     private function pedidoCerrado(Pedido $pedido): RedirectResponse

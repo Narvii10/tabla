@@ -65,6 +65,69 @@ class CajaTest extends TestCase
         $this->assertSame('abierto', $pedido->fresh()->estado);
     }
 
+    public function test_al_cobrar_en_efectivo_la_pantalla_muestra_el_vuelto(): void
+    {
+        $mesa = Mesa::factory()->create(['estado' => 'cuenta']);
+        $pedido = Pedido::factory()->create(['mesa_id' => $mesa->id]);
+        $this->detalle($pedido, Producto::factory()->create(['precio' => 76.50]), 1);
+
+        $this->post(route('caja.pedidos.pagos.store', $pedido), [
+            'metodo' => 'efectivo',
+            'monto' => 76.50,
+            'recibido' => 100,
+        ])->assertRedirect(route('caja.index'))
+            ->assertSessionHas('vuelto', fn (array $vuelto) => $vuelto['vuelto'] === 23.5);
+
+        $this->get(route('caja.index'))->assertSee('Entrega de vuelto')->assertSee('Q 23.50');
+    }
+
+    public function test_un_pedido_sin_saldo_se_cierra_desde_caja(): void
+    {
+        $mesa = Mesa::factory()->create(['estado' => 'ocupada']);
+        $pedido = Pedido::factory()->create(['mesa_id' => $mesa->id]);
+
+        $this->get(route('caja.pedidos.show', $pedido))->assertOk()->assertSee('Cerrar cuenta y liberar mesa');
+
+        $this->patch(route('caja.pedidos.cerrar', $pedido))->assertRedirect(route('caja.index'));
+
+        $this->assertSame('cerrado', $pedido->fresh()->estado);
+        $this->assertSame('libre', $mesa->fresh()->estado);
+    }
+
+    public function test_no_se_cierra_un_pedido_con_saldo(): void
+    {
+        $pedido = Pedido::factory()->create();
+        $this->detalle($pedido, Producto::factory()->create(['precio' => 100]), 1);
+
+        $this->patch(route('caja.pedidos.cerrar', $pedido))->assertSessionHas('error');
+
+        $this->assertSame('abierto', $pedido->fresh()->estado);
+    }
+
+    public function test_la_pantalla_de_cobro_carga_con_productos_y_pagos(): void
+    {
+        $pedido = Pedido::factory()->create();
+        $this->detalle($pedido, Producto::factory()->create(['precio' => 100]), 2);
+        Pago::create([
+            'pedido_id' => $pedido->id, 'cajero_id' => auth()->id(),
+            'metodo' => 'efectivo', 'monto' => 50, 'recibido' => 100, 'vuelto' => 50,
+        ]);
+
+        $this->get(route('caja.pedidos.show', $pedido))
+            ->assertOk()
+            ->assertSee('¿Con cuánto paga el cliente?')
+            ->assertSee('Q 150.00');
+    }
+
+    public function test_no_se_cambia_la_propina_de_un_pedido_cerrado(): void
+    {
+        $pedido = Pedido::factory()->create(['estado' => 'cerrado', 'cerrado_en' => now()]);
+
+        $this->patch(route('caja.pedidos.propina', $pedido), ['propina' => 10])->assertSessionHas('error');
+
+        $this->assertSame('0.00', $pedido->fresh()->propina);
+    }
+
     public function test_no_se_puede_cobrar_mas_del_saldo_ni_con_efectivo_insuficiente(): void
     {
         $pedido = Pedido::factory()->create();

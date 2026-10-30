@@ -12,9 +12,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 /**
- * Pedidos del mesero: abrir el pedido de una mesa, enviar rondas a cocina,
- * marcar entregadas las comandas listas y avisar que la mesa pidió la cuenta.
- * Cada acción cambia el estado de la mesa como dice la tabla de CLAUDE.md.
+ * Pedidos del mesero: abrir pedido, enviar rondas a cocina, entregar comandas y pedir la cuenta.
+ * Cada acción actualiza también el estado de la mesa.
  */
 class PedidoController extends Controller
 {
@@ -190,9 +189,36 @@ class PedidoController extends Controller
                 ->with('error', 'El pedido no tiene productos todavía.');
         }
 
+        // No se pide la cuenta con productos que cocina no ha recibido
+        if ($pedido->detalles()->whereNull('comanda_id')->exists()) {
+            return redirect()->route('mesero.pedidos.show', $pedido)
+                ->with('error', 'Hay productos sin enviar a cocina. Envíalos o quítalos antes de pedir la cuenta.');
+        }
+
         $pedido->mesa->update(['estado' => 'cuenta']);
 
         return redirect()->route('mesero.pedidos.show', $pedido)
             ->with('success', "Listo: caja ya ve la cuenta de la mesa {$pedido->mesa->numero}.");
+    }
+
+    /**
+     * Cancela un pedido vacío (mesa abierta por error) y libera la mesa.
+     */
+    public function cancelar(Pedido $pedido): RedirectResponse
+    {
+        if (! $pedido->estaAbierto()) {
+            return redirect()->route('mesero.pedidos.show', $pedido)->with('error', 'Este pedido ya está cerrado.');
+        }
+
+        if ($pedido->detalles()->exists()) {
+            return redirect()->route('mesero.pedidos.show', $pedido)
+                ->with('error', 'Solo se puede cancelar un pedido sin productos.');
+        }
+
+        $pedido->update(['estado' => 'cancelado', 'cerrado_en' => now()]);
+        $pedido->mesa->update(['estado' => 'libre']);
+
+        return redirect()->route('mesero.index')
+            ->with('success', "Pedido cancelado. La mesa {$pedido->mesa->numero} está libre.");
     }
 }

@@ -61,6 +61,7 @@ Route::prefix('mesero')->name('mesero.')->middleware(['auth', 'rol:mesero,admin'
     Route::get('pedidos/{pedido}', [PedidoController::class, 'show'])->name('pedidos.show');
     Route::post('pedidos/{pedido}/enviar', [PedidoController::class, 'enviarACocina'])->name('pedidos.enviar');
     Route::patch('pedidos/{pedido}/cuenta', [PedidoController::class, 'pedirCuenta'])->name('pedidos.cuenta');
+    Route::patch('pedidos/{pedido}/cancelar', [PedidoController::class, 'cancelar'])->name('pedidos.cancelar');
     Route::patch('comandas/{comanda}/entregada', [PedidoController::class, 'marcarEntregada'])->name('comandas.entregada');
     Route::post('pedidos/{pedido}/detalles', [DetallePedidoController::class, 'store'])->name('pedidos.detalles.store');
     // scopeBindings: el detalle tiene que ser de ese pedido, si no responde 404
@@ -82,6 +83,7 @@ Route::prefix('caja')->name('caja.')->middleware(['auth', 'rol:caja,admin'])->gr
     Route::get('pedidos/{pedido}', [CajaController::class, 'show'])->name('pedidos.show');
     Route::patch('pedidos/{pedido}/propina', [CajaController::class, 'actualizarPropina'])->name('pedidos.propina');
     Route::post('pedidos/{pedido}/pagos', [PagoController::class, 'store'])->name('pedidos.pagos.store');
+    Route::patch('pedidos/{pedido}/cerrar', [CajaController::class, 'cerrar'])->name('pedidos.cerrar');
     Route::get('cierre', [CierreCajaController::class, 'create'])->name('cierre.create');
     Route::post('cierre', [CierreCajaController::class, 'store'])->name('cierre.store');
 });

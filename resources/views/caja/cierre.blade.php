@@ -46,7 +46,8 @@
                             <span>Efectivo contado</span><x-money :amount="$cierre->efectivo_contado" />
                         </div>
                         <div class="d-flex justify-content-between fw-semibold">
-                            <span>Diferencia</span><x-money :amount="$cierre->diferencia" />
+                            <span>{{ $cierre->diferencia > 0 ? 'Sobró' : ($cierre->diferencia < 0 ? 'Faltó' : 'Diferencia') }}</span>
+                            <x-money :amount="abs((float) $cierre->diferencia)" />
                         </div>
                         @if ($cierre->notas)
                             <p class="small text-muted mt-3 mb-0">{{ $cierre->notas }}</p>
@@ -60,12 +61,20 @@
                         <form method="POST" action="{{ route('caja.cierre.store') }}" id="form-cierre">
                             @csrf
                             <div class="mb-3">
-                                <label for="cierre-efectivo-contado" class="form-label">Efectivo contado</label>
-                                <input type="number" name="efectivo_contado" id="cierre-efectivo-contado"
-                                       class="form-control" step="0.01" min="0" required
-                                       data-esperado="{{ $esperado['efectivo'] }}">
+                                <label for="cierre-efectivo-contado" class="form-label fw-semibold">¿Cuánto efectivo hay en la caja?</label>
+                                <div class="input-group input-group-lg input-recibido">
+                                    <span class="input-group-text">Q</span>
+                                    <input type="number" name="efectivo_contado" id="cierre-efectivo-contado"
+                                           class="form-control" step="0.01" min="0" max="1000000" inputmode="decimal"
+                                           placeholder="0.00" required value="{{ old('efectivo_contado') }}"
+                                           data-esperado="{{ $esperado['efectivo'] }}">
+                                </div>
+                                <div class="form-text">Debería haber <x-money :amount="$esperado['efectivo']" /> en efectivo.</div>
                             </div>
-                            <p class="mb-3" id="cierre-diferencia"></p>
+                            <div class="vuelto-caja mb-3" id="cierre-diferencia" data-estado="vacio" aria-live="polite">
+                                <span class="vuelto-caja-titulo" id="cierre-diferencia-titulo">Diferencia</span>
+                                <span class="vuelto-caja-monto" id="cierre-diferencia-monto">—</span>
+                            </div>
                             <div class="mb-3">
                                 <label for="cierre-notas" class="form-label">Notas <span class="text-muted">(opcional)</span></label>
                                 <textarea name="notas" id="cierre-notas" class="form-control" maxlength="500" rows="3"></textarea>

@@ -9,6 +9,8 @@
         </a>
     </x-page-header>
 
+    @include('caja._vuelto')
+
     @if ($pedidos->isEmpty())
         <div class="card">
             <x-empty-state icon="bi-cash-coin" title="No hay cuentas abiertas"

@@ -14,7 +14,7 @@ class CierreCajaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'efectivo_contado' => ['required', 'numeric', 'min:0'],
+            'efectivo_contado' => ['required', 'numeric', 'min:0', 'max:1000000'],
             'notas' => ['nullable', 'string', 'max:500'],
         ];
     }

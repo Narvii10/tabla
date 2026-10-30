@@ -24,23 +24,6 @@
         </div>
     @endif
 
-    {{-- Maridaje: se ofrece el vino sugerido del plato que se acaba de agregar --}}
-    @if ($vino && $abierto)
-        <div class="alert alert-vino shadow-sm d-flex flex-wrap align-items-center gap-2" role="status">
-            <i class="bi bi-droplet-half fs-5"></i>
-            <div class="flex-grow-1">
-                <strong>Ofrécele el vino sugerido</strong>
-                <div class="small">Con «{{ $vino['plato'] }}» va muy bien {{ $vino['nombre'] }}.</div>
-            </div>
-            <form method="POST" action="{{ route('mesero.pedidos.detalles.store', $pedido) }}">
-                @csrf
-                <input type="hidden" name="producto_id" value="{{ $vino['id'] }}">
-                <input type="hidden" name="cantidad" value="1">
-                <button class="btn btn-sm btn-primary"><i class="bi bi-plus-lg me-1"></i>Agregar {{ $vino['nombre'] }}</button>
-            </form>
-        </div>
-    @endif
-
     <div class="row g-4">
         {{-- Catálogo: buscador, categorías y productos --}}
         @if ($abierto)
@@ -95,10 +78,24 @@
         @endif
 
         {{-- Pedido: por enviar, rondas enviadas y total --}}
-        <div @class(['order-1 order-lg-2', 'col-lg-5' => $abierto, 'col-lg-8 mx-auto' => ! $abierto])>
+        <div id="pedido-actual" @class(['order-1 order-lg-2', 'col-lg-5 columna-pedido' => $abierto, 'col-lg-8 mx-auto' => ! $abierto])>
             @unless ($abierto)
                 <div class="alert alert-aviso"><i class="bi bi-lock-fill me-1"></i>Este pedido ya está cerrado.</div>
             @endunless
+
+            {{-- Vino sugerido del último plato agregado --}}
+            @if ($vino && $abierto)
+                <div class="alert alert-vino py-2 px-3 mb-3 d-flex align-items-center gap-2" role="status">
+                    <i class="bi bi-droplet-half"></i>
+                    <div class="flex-grow-1 small">Ofrece <strong>{{ $vino['nombre'] }}</strong> con «{{ $vino['plato'] }}».</div>
+                    <form method="POST" action="{{ route('mesero.pedidos.detalles.store', $pedido) }}">
+                        @csrf
+                        <input type="hidden" name="producto_id" value="{{ $vino['id'] }}">
+                        <input type="hidden" name="cantidad" value="1">
+                        <button class="btn btn-sm btn-primary text-nowrap"><i class="bi bi-plus-lg me-1"></i>Agregar</button>
+                    </form>
+                </div>
+            @endif
 
             <div class="card mb-3">
                 <div class="card-header">Por enviar a cocina</div>
@@ -184,10 +181,21 @@
                     <p class="small text-muted mb-0">La propina y el cobro se hacen en caja.</p>
 
                     @if ($abierto)
-                        @if ($pedido->mesa->estado === 'cuenta')
+                        @if ($pedido->detalles->isEmpty())
+                            <form method="POST" action="{{ route('mesero.pedidos.cancelar', $pedido) }}" class="mt-3"
+                                  onsubmit="return confirm('¿Cancelar este pedido y dejar la mesa libre?')">
+                                @csrf
+                                @method('PATCH')
+                                <button class="btn btn-light text-danger w-100"><i class="bi bi-x-circle me-1"></i>Cancelar pedido y liberar mesa</button>
+                            </form>
+                        @elseif ($pedido->mesa->estado === 'cuenta')
                             <div class="alert alert-aviso mt-3 mb-0 py-2 small">
                                 <i class="bi bi-receipt me-1"></i>La cuenta ya está en caja.
                             </div>
+                        @elseif ($porEnviar->isNotEmpty())
+                            <p class="small text-muted mt-3 mb-0">
+                                <i class="bi bi-info-circle me-1"></i>Envía a cocina lo pendiente para poder pedir la cuenta.
+                            </p>
                         @else
                             <form method="POST" action="{{ route('mesero.pedidos.cuenta', $pedido) }}" class="mt-3"
                                   onsubmit="return confirm('¿La mesa pidió la cuenta?')">
@@ -201,6 +209,20 @@
             </div>
         </div>
     </div>
+
+    {{-- Barra inferior en celular --}}
+    @if ($abierto)
+        <div class="espacio-barra-pedido d-lg-none"></div>
+        <a href="#pedido-actual" class="barra-pedido d-lg-none">
+            <span>
+                @if ($porEnviar->isNotEmpty())
+                    <strong>{{ $porEnviar->sum('cantidad') }}</strong> por enviar ·
+                @endif
+                Total <strong><x-money :amount="$pedido->subtotal()" /></strong>
+            </span>
+            <span class="text-nowrap">Ver pedido <i class="bi bi-arrow-up-circle-fill ms-1"></i></span>
+        </a>
+    @endif
 
     {{-- Ventana para elegir cantidad y nota del producto tocado --}}
     @if ($abierto)
@@ -292,6 +314,19 @@
                 });
 
                 modalElemento.addEventListener('shown.bs.modal', () => document.getElementById('agregar-cantidad').select());
+
+                // Mantener la posición del scroll al recargar
+                const claveScroll = 'scroll-pedido-{{ $pedido->id }}';
+                try {
+                    const guardado = sessionStorage.getItem(claveScroll);
+                    if (guardado !== null) {
+                        sessionStorage.removeItem(claveScroll);
+                        window.scrollTo(0, parseInt(guardado, 10));
+                    }
+                } catch {}
+                document.querySelectorAll('form').forEach((form) => form.addEventListener('submit', () => {
+                    try { sessionStorage.setItem(claveScroll, String(window.scrollY)); } catch {}
+                }));
             })();
         </script>
     @endpush

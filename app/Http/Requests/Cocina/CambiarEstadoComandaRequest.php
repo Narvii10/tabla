@@ -7,8 +7,8 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
 /**
- * Cocina mueve una comanda: pendiente → preparando → listo.
- * "Entregado" no lo pone cocina, lo marca el mesero al llevarla a la mesa.
+ * Cocina pasa la comanda de pendiente a preparando y de preparando a listo.
+ * "Entregado" lo marca el mesero.
  */
 class CambiarEstadoComandaRequest extends FormRequest
 {
