@@ -28,3 +28,7 @@ Thumbs.db
 
 # Archivos que Windows agrega al descargar (con dos puntos o con el caracter que WSL usa en su lugar)
 *Zone.Identifier
+
+# Instrucciones para asistentes de IA (solo locales)
+CLAUDE.md
+AGENTS.md
