@@ -15,7 +15,7 @@ class PropinaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'propina' => ['required', 'numeric', 'min:0'],
+            'propina' => ['required', 'numeric', 'min:0', 'max:100000', 'decimal:0,2'],
         ];
     }
 

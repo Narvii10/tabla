@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Mesero;
 use App\Http\Controllers\Controller;
 use App\Models\Mesa;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\Route;
 use Illuminate\View\View;
 
 /**
@@ -50,7 +49,7 @@ class MapaMesasController extends Controller
                 'comandas_listas' => (int) ($mesa->pedidoAbierto?->comandas_listas ?? 0),
                 // Hace cuánto se abrió el pedido ("Hace 25 min"); vacío si la mesa está libre
                 'tiempo' => $this->tiempoAbierto($mesa),
-                'url' => $this->urlPedido($mesa),
+                'url' => route('mesero.mesas.pedido', $mesa),
             ]);
 
         return [
@@ -76,14 +75,5 @@ class MapaMesasController extends Controller
             $minutos < 60 => "Hace {$minutos} min",
             default => 'Hace '.intdiv($minutos, 60).' h '.($minutos % 60).' min',
         };
-    }
-
-    /**
-     * A dónde lleva el clic en una mesa. La pantalla del pedido es del módulo de Pedidos:
-     * cuando exista la ruta mesero.mesas.pedido, el mapa la usa sola; mientras tanto, no lleva a ningún lado.
-     */
-    private function urlPedido(Mesa $mesa): ?string
-    {
-        return Route::has('mesero.mesas.pedido') ? route('mesero.mesas.pedido', $mesa) : null;
     }
 }

@@ -150,7 +150,11 @@
                 </div>
             </div>
 
-            @if ($saldo > 0)
+            @if ($saldo > 0 && $cajaCerrada)
+                <div class="alert alert-aviso">
+                    <i class="bi bi-lock-fill me-1"></i>La caja de hoy ya se cerró. Este pedido se cobra mañana.
+                </div>
+            @elseif ($saldo > 0)
                 <div class="card mb-3" id="cobro">
                     <div class="card-header">Cobrar</div>
                     <div class="card-body">

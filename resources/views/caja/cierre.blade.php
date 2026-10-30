@@ -16,6 +16,9 @@
         <div class="alert alert-aviso">
             <i class="bi bi-receipt me-1"></i>
             Quedan {{ $pendientes }} {{ $pendientes === 1 ? 'pedido abierto' : 'pedidos abiertos' }} sin cobrar.
+            @unless ($cierre)
+                Después del cierre ya no se puede cobrar hoy.
+            @endunless
         </div>
     @endif
 

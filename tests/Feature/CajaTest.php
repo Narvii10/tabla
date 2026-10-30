@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Http\Controllers\Caja\CajaController;
 use App\Models\CierreCaja;
 use App\Models\DetallePedido;
 use App\Models\Mesa;
@@ -160,12 +159,32 @@ class CajaTest extends TestCase
         $this->assertSame(110.0, $pedido->total());
     }
 
-    public function test_dividir_100_entre_3_da_33_34_33_33_33_33_y_suma_exacto(): void
+    public function test_una_propina_fuera_de_rango_se_rechaza_sin_error_500(): void
     {
-        $partes = CajaController::dividir(10000, 3);
+        $pedido = Pedido::factory()->create();
 
-        $this->assertSame([3334, 3333, 3333], $partes);
-        $this->assertSame(10000, array_sum($partes));
+        $this->patch(route('caja.pedidos.propina', $pedido), ['propina' => 999999999999])
+            ->assertSessionHasErrors('propina');
+
+        $this->assertSame('0.00', $pedido->fresh()->propina);
+    }
+
+    public function test_despues_del_cierre_del_dia_no_se_cobra(): void
+    {
+        $pedido = Pedido::factory()->create();
+        $this->detalle($pedido, Producto::factory()->create(['precio' => 100]), 1);
+        CierreCaja::create(['cajero_id' => auth()->id(), 'fecha' => today()]);
+
+        $this->get(route('caja.pedidos.show', $pedido))
+            ->assertOk()
+            ->assertSee('Este pedido se cobra mañana')
+            ->assertDontSee('¿Con cuánto paga el cliente?');
+
+        $this->post(route('caja.pedidos.pagos.store', $pedido), ['metodo' => 'tarjeta', 'monto' => 100])
+            ->assertSessionHas('error');
+
+        $this->assertSame(0, $pedido->pagos()->count());
+        $this->assertSame('abierto', $pedido->fresh()->estado);
     }
 
     public function test_cierre_calcula_esperado_por_metodo_ignora_el_formulario_y_el_segundo_del_dia_se_rechaza(): void

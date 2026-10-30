@@ -2,8 +2,7 @@
     Una mesa del mapa. Recibe $mesa (arreglo de MapaMesasController::datosMapa).
     public/js/mapa-mesas.js actualiza data-estado y los elementos con data-campo cada 5 segundos.
 --}}
-@php($etiqueta = $mesa['url'] ? 'a' : 'div')
-<{{ $etiqueta }} @if ($mesa['url']) href="{{ $mesa['url'] }}" @endif
+<a href="{{ $mesa['url'] }}"
     @class(['mesa-tile', 'con-lista' => $mesa['comandas_listas'] > 0])
     data-mesa="{{ $mesa['id'] }}" data-estado="{{ $mesa['estado'] }}" data-listas="{{ $mesa['comandas_listas'] }}"
     aria-label="Mesa {{ $mesa['numero'] }}, para {{ $mesa['capacidad'] }} {{ $mesa['capacidad'] === 1 ? 'persona' : 'personas' }}">
@@ -19,4 +18,4 @@
         <i class="bi bi-bell-fill" aria-hidden="true"></i>
         <span data-campo="aviso-texto">{{ $mesa['comandas_listas'] > 1 ? $mesa['comandas_listas'].' comandas listas' : '¡Comanda lista!' }}</span>
     </span>
-</{{ $etiqueta }}>
+</a>
