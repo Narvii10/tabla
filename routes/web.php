@@ -7,7 +7,9 @@ use App\Http\Controllers\Admin\UsuarioController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Cocina\CocinaController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\Mesero\DetallePedidoController;
 use App\Http\Controllers\Mesero\MapaMesasController;
+use App\Http\Controllers\Mesero\PedidoController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -48,6 +50,19 @@ Route::prefix('mesero')->name('mesero.')->middleware(['auth', 'rol:mesero,admin'
     // Mesas: el mapa es la pantalla de inicio del mesero
     Route::get('/', [MapaMesasController::class, 'index'])->name('index');
     Route::get('mesas/datos', [MapaMesasController::class, 'datos'])->name('mesas.datos');
+
+    // Pedidos: mesas/{mesa}/pedido es la ruta a la que enlaza el mapa de mesas
+    Route::get('mesas/{mesa}/pedido', [PedidoController::class, 'mesa'])->name('mesas.pedido');
+    Route::post('mesas/{mesa}/pedido', [PedidoController::class, 'abrir'])->name('mesas.pedido.abrir');
+    Route::get('pedidos', [PedidoController::class, 'index'])->name('pedidos.index');
+    Route::get('pedidos/{pedido}', [PedidoController::class, 'show'])->name('pedidos.show');
+    Route::post('pedidos/{pedido}/enviar', [PedidoController::class, 'enviarACocina'])->name('pedidos.enviar');
+    Route::patch('pedidos/{pedido}/cuenta', [PedidoController::class, 'pedirCuenta'])->name('pedidos.cuenta');
+    Route::patch('comandas/{comanda}/entregada', [PedidoController::class, 'marcarEntregada'])->name('comandas.entregada');
+    Route::post('pedidos/{pedido}/detalles', [DetallePedidoController::class, 'store'])->name('pedidos.detalles.store');
+    // scopeBindings: el detalle tiene que ser de ese pedido, si no responde 404
+    Route::delete('pedidos/{pedido}/detalles/{detalle}', [DetallePedidoController::class, 'destroy'])
+        ->scopeBindings()->name('pedidos.detalles.destroy');
 });
 
 // Cocina (roles: cocina, admin)
