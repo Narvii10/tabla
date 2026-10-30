@@ -59,9 +59,34 @@ class CajaController extends Controller
 
     public function actualizarPropina(PropinaRequest $request, Pedido $pedido): RedirectResponse
     {
+        if (! $pedido->estaAbierto()) {
+            return redirect()->route('caja.index')->with('error', 'Ese pedido ya está cerrado.');
+        }
+
         $pedido->update(['propina' => $request->validated('propina')]);
 
         return redirect()->route('caja.pedidos.show', $pedido)->with('success', 'Propina actualizada.');
+    }
+
+    /**
+     * Cierra un pedido con saldo en cero y libera la mesa.
+     */
+    public function cerrar(Pedido $pedido): RedirectResponse
+    {
+        $pedido->load(['mesa', 'detalles', 'pagos']);
+
+        if (! $pedido->estaAbierto()) {
+            return redirect()->route('caja.index')->with('error', 'Ese pedido ya está cerrado.');
+        }
+        if ($pedido->saldo() > 0) {
+            return redirect()->route('caja.pedidos.show', $pedido)->with('error', 'Todavía hay saldo por cobrar.');
+        }
+
+        $pedido->update(['estado' => 'cerrado', 'cerrado_en' => now()]);
+        $pedido->mesa->update(['estado' => 'libre']);
+
+        return redirect()->route('caja.index')
+            ->with('success', "Cuenta cerrada. La mesa {$pedido->mesa->numero} está libre.");
     }
 
     public static function dividir(int $centavos, int $personas): array

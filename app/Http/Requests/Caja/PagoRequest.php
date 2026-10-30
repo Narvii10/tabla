@@ -18,7 +18,7 @@ class PagoRequest extends FormRequest
         return [
             'metodo' => ['required', Rule::in(array_keys(Pago::METODOS))],
             'monto' => ['required', 'numeric', 'min:0.01', 'regex:/^\d+(\.\d{1,2})?$/'],
-            'recibido' => ['nullable', 'numeric', 'gte:monto', Rule::requiredIf($this->input('metodo') === 'efectivo')],
+            'recibido' => ['nullable', 'numeric', 'gte:monto', 'max:100000', Rule::requiredIf($this->input('metodo') === 'efectivo')],
         ];
     }
 

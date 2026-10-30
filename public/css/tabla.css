@@ -1163,6 +1163,40 @@ span.btn-estado { cursor: default; }
 .estado-comanda-listo { background: var(--tabla-mostaza); color: var(--tabla-madera); font-weight: 600; }
 .estado-comanda-entregado { background: #e5efdc; color: #2f5418; }
 
+/* Columna del pedido: en pantalla ancha se queda a la vista mientras se baja por el catálogo */
+#pedido-actual { scroll-margin-top: 1rem; }
+@media (min-width: 992px) {
+    .columna-pedido {
+        position: sticky;
+        top: 1rem;
+        align-self: flex-start;
+        max-height: calc(100vh - 2rem);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+    }
+}
+
+/* Celular: barra fija abajo con el total y un botón para subir al pedido */
+.barra-pedido {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1020;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: .75rem;
+    min-height: 56px;
+    padding: .6rem 1rem calc(.6rem + env(safe-area-inset-bottom));
+    background: var(--tabla-madera);
+    color: #f4ead6;
+    text-decoration: none;
+    box-shadow: 0 -.25rem .75rem rgba(47, 34, 27, .2);
+}
+.barra-pedido:hover, .barra-pedido:focus { color: #fffdf8; }
+.espacio-barra-pedido { height: 4rem; }
+
 /* Aviso para ofrecer el vino sugerido */
 .alert-vino { background: var(--tabla-vino-claro); border-color: #e4c9c5; color: var(--tabla-vino-oscuro); }
 
@@ -1193,3 +1227,76 @@ span.btn-estado { cursor: default; }
 @media (hover: hover) and (pointer: fine) {
     .tarjeta-pedido-cuenta:hover { border-color: var(--tabla-vino-oscuro); }
 }
+
+/* ---------- Caja (caja/show y caja/cierre) ---------- */
+
+/* Lo que falta por cobrar, lo primero que mira la cajera */
+.saldo-caja { font-size: 1.9rem; font-weight: 700; color: var(--tabla-vino); font-variant-numeric: tabular-nums; }
+
+/* Botones grandes para elegir método de pago o propina */
+.opciones-pago { display: flex; flex-wrap: wrap; gap: .5rem; }
+.opcion-pago {
+    flex: 1 1 0;
+    min-width: 6.5rem;
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .4rem;
+    padding: .5rem .75rem;
+    border: 1px solid var(--tabla-borde-fuerte);
+    border-radius: .6rem;
+    background: var(--tabla-papel);
+    color: var(--tabla-texto);
+    font-weight: 500;
+    text-align: center;
+    cursor: pointer;
+    user-select: none;
+    touch-action: manipulation;
+}
+.opcion-metodo { flex-direction: column; gap: .15rem; }
+.opcion-metodo .bi { font-size: 1.4rem; }
+.btn-check:checked + .opcion-pago { border-color: var(--tabla-vino); background: var(--tabla-vino); color: #fffdf8; }
+.btn-check:focus-visible + .opcion-pago { outline: 3px solid rgba(200, 150, 62, .7); outline-offset: 2px; }
+
+/* Campo grande para "¿Con cuánto paga?" y "efectivo contado" */
+.input-recibido .form-control,
+.input-recibido .input-group-text { font-size: 1.75rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.input-recibido .form-control { min-height: 64px; }
+
+/* Montos rápidos debajo del campo: Exacto, Q 50, Q 100... */
+.billetes { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .5rem; }
+.billete { flex: 1 1 0; min-width: 5rem; min-height: 44px; font-weight: 600; }
+
+/* Caja del vuelto (y de la diferencia en el cierre): cambia de color según el caso */
+.vuelto-caja {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: .75rem;
+    padding: .9rem 1rem;
+    border: 2px dashed var(--tabla-borde-fuerte);
+    border-radius: .75rem;
+    background: var(--tabla-arena);
+    color: var(--tabla-gris);
+    text-align: center;
+}
+.vuelto-caja-titulo { font-size: .85rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; }
+.vuelto-caja-monto { font-size: 2.6rem; font-weight: 700; line-height: 1.15; font-variant-numeric: tabular-nums; }
+.vuelto-caja[data-estado="ok"] { border: 2px solid #9cc086; background: #e5efdc; color: #2f5418; }
+.vuelto-caja[data-estado="exacto"] { border: 2px solid #cfe0c0; background: #eef5e8; color: #2f5418; }
+.vuelto-caja[data-estado="falta"] { border: 2px solid #e2a8a2; background: #f8e1df; color: #8f2424; }
+
+/* Aviso después de cobrar: el vuelto que hay que entregar. No se cierra solo */
+.aviso-vuelto {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    border: 2px solid #9cc086;
+    background: #e5efdc;
+    color: #2f5418;
+    box-shadow: 0 .25rem .75rem rgba(47, 84, 24, .12);
+}
+.aviso-vuelto-icono { font-size: 2.5rem; }
+.aviso-vuelto-titulo { font-weight: 600; }
+.aviso-vuelto-monto { font-size: 2.6rem; font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; }

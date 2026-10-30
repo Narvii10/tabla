@@ -164,7 +164,7 @@ class PedidosTest extends TestCase
         $this->delete(route('mesero.pedidos.detalles.destroy', [$pedido, $enviado]))->assertSessionHas('error');
         $this->assertModelExists($enviado);
 
-        $this->delete(route('mesero.pedidos.detalles.destroy', [$pedido, $nuevo]))->assertSessionHas('success');
+        $this->delete(route('mesero.pedidos.detalles.destroy', [$pedido, $nuevo]))->assertSessionMissing('error');
         $this->assertModelMissing($nuevo);
     }
 
@@ -209,14 +209,52 @@ class PedidosTest extends TestCase
     public function test_pedir_la_cuenta_pasa_la_mesa_a_cuenta(): void
     {
         $pedido = Pedido::factory()->create();
+        $comanda = $pedido->comandas()->create(['enviada_en' => now(), 'estado' => 'entregado']);
         DetallePedido::create([
-            'pedido_id' => $pedido->id, 'producto_id' => Producto::factory()->create()->id,
+            'pedido_id' => $pedido->id, 'comanda_id' => $comanda->id, 'producto_id' => Producto::factory()->create()->id,
             'cantidad' => 1, 'precio_unitario' => 10,
         ]);
 
         $this->patch(route('mesero.pedidos.cuenta', $pedido))->assertSessionHas('success');
 
         $this->assertSame('cuenta', $pedido->mesa->fresh()->estado);
+    }
+
+    public function test_no_se_pide_la_cuenta_con_productos_sin_enviar_a_cocina(): void
+    {
+        $pedido = Pedido::factory()->create();
+        DetallePedido::create([
+            'pedido_id' => $pedido->id, 'producto_id' => Producto::factory()->create()->id,
+            'cantidad' => 1, 'precio_unitario' => 10,
+        ]);
+
+        $this->patch(route('mesero.pedidos.cuenta', $pedido))->assertSessionHas('error');
+
+        $this->assertNotSame('cuenta', $pedido->mesa->fresh()->estado);
+    }
+
+    public function test_un_pedido_sin_productos_se_cancela_y_libera_la_mesa(): void
+    {
+        $mesa = Mesa::factory()->create(['estado' => 'ocupada']);
+        $pedido = Pedido::factory()->create(['mesa_id' => $mesa->id]);
+
+        $this->patch(route('mesero.pedidos.cancelar', $pedido))->assertRedirect(route('mesero.index'));
+
+        $this->assertSame('cancelado', $pedido->fresh()->estado);
+        $this->assertSame('libre', $mesa->fresh()->estado);
+    }
+
+    public function test_un_pedido_con_productos_no_se_cancela(): void
+    {
+        $pedido = Pedido::factory()->create();
+        DetallePedido::create([
+            'pedido_id' => $pedido->id, 'producto_id' => Producto::factory()->create()->id,
+            'cantidad' => 1, 'precio_unitario' => 10,
+        ]);
+
+        $this->patch(route('mesero.pedidos.cancelar', $pedido))->assertSessionHas('error');
+
+        $this->assertSame('abierto', $pedido->fresh()->estado);
     }
 
     public function test_un_pedido_cerrado_no_se_modifica(): void
