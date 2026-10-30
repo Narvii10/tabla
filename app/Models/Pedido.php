@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\DB;
 
 #[Fillable(['mesa_id', 'mesero_id', 'estado', 'propina', 'abierto_en', 'cerrado_en'])]
 class Pedido extends Model
@@ -69,6 +70,36 @@ class Pedido extends Model
     public function estaAbierto(): bool
     {
         return $this->estado === 'abierto';
+    }
+
+    /**
+     * Termina el pedido (cerrado o cancelado) y deja la mesa libre.
+     */
+    public function cerrar(string $estado = 'cerrado'): void
+    {
+        DB::transaction(function () use ($estado) {
+            $this->update(['estado' => $estado, 'cerrado_en' => now()]);
+            $this->mesa->update(['estado' => 'libre']);
+        });
+    }
+
+    /**
+     * Reparte un monto en centavos entre varias personas; los centavos que sobran
+     * van a las primeras para que la suma dé exacto.
+     */
+    public static function dividir(int $centavos, int $personas): array
+    {
+        if ($personas < 1) {
+            return [$centavos];
+        }
+
+        $base = intdiv($centavos, $personas);
+        $resto = $centavos % $personas;
+
+        return array_map(
+            fn (int $i) => $base + ($i < $resto ? 1 : 0),
+            range(0, $personas - 1)
+        );
     }
 
     /**

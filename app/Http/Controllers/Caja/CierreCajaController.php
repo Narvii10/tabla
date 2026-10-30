@@ -14,11 +14,9 @@ class CierreCajaController extends Controller
 {
     public function create(): View
     {
-        $hoy = today();
-
         return view('caja.cierre', [
-            'cierre' => CierreCaja::whereDate('fecha', $hoy)->first(),
-            'esperado' => $this->esperadoDeHoy($hoy),
+            'cierre' => CierreCaja::deHoy(),
+            'esperado' => $this->esperadoDeHoy(today()),
             'pendientes' => Pedido::where('estado', 'abierto')->count(),
         ]);
     }
@@ -27,7 +25,7 @@ class CierreCajaController extends Controller
     {
         $hoy = today();
 
-        if (CierreCaja::whereDate('fecha', $hoy)->exists()) {
+        if (CierreCaja::deHoy()) {
             return redirect()->route('caja.cierre.create')->with('error', 'Ya existe un cierre de caja para hoy.');
         }
 
